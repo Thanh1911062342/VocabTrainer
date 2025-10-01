@@ -45,7 +45,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
       const idxs = Array.from({ length: words.length }, (_, i) => i)
       for (let i = idxs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[idxs[i], idxs[j]] = [idxs[j], idxs[i]]
+          ;[idxs[i], idxs[j]] = [idxs[j], idxs[i]]
       }
       const selected = idxs.slice(0, count)
       const p = { ...progress, selectedIdxs: selected, poolSize: selected.length }
@@ -168,7 +168,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
       const remaining = allIdx.filter(i => !currentSet.has(i))
       for (let i = remaining.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[remaining[i], remaining[j]] = [remaining[j], remaining[i]]
+          ;[remaining[i], remaining[j]] = [remaining[j], remaining[i]]
       }
       const addCount = Math.min(config.increment || 1, remaining.length)
       const added = remaining.slice(0, addCount)
@@ -245,7 +245,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
       {/* Header */}
       <div className="flex items-center justify-between p-3 sm:p-4">
-        <div className="flex items-center gap-2 text-sm text-neutral-300">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2 text-sm text-neutral-300">
           <button
             className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hover:bg-neutral-700 transition"
             onClick={() => {
@@ -259,9 +259,17 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           >
             Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}
           </button>
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Speed: {config.speedMs}ms</span>
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Round: {progress.round || 1}</span>
+
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">
+            Speed: {config.speedMs}ms
+          </span>
+
+          {/* đổi từ 'hidden sm:inline' -> 'block sm:inline' */}
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 block sm:inline">
+            Round: {progress.round || 1}
+          </span>
         </div>
+
         <div className="flex items-center gap-2">
           {/* eye menu (reading/meaning) */}
           <div className="relative">
