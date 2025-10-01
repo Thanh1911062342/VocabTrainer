@@ -448,7 +448,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                               >
                                 {isPlaying ? <Square /> : <Volume2 />}
                               </button>
-                              <span className="word font-medium text-lg">{w.word}</span>
+                              <span className="word font-medium text-3xl">{w.word}</span>
                               <span className="reading text-neutral-400">{w.reading}</span>
                             </div>
                           </div>
@@ -463,9 +463,6 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                 ) : (
                   <div className="empty text-sm text-neutral-400">No studied words yet.</div>
                 )}
-              </div>
-              <div className="modal-actions">
-                <button className="icon-btn" onClick={() => setShowStudied(false)}>Close</button>
               </div>
             </div>
           </div>
