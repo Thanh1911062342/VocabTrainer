@@ -1,28 +1,27 @@
 // src/components/Trainer.jsx
-// Robust small-pool + chunk gate. Fix empty screen by seeding immediately if poolSize>0 but selectedIdxs is empty.
-// Also fix stopAudioAndCleanup, and re-run present effect when selectedIdxs/poolSize change.
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Eye, RotateCcw, Repeat, Presentation, ListChecks, Volume2, Square } from 'lucide-react'
 import RSVPDisplay from './RSVPDisplay'
 import Recall from './Recall'
 import { shuffle, normalize } from '../utils/shuffle'
 import { decodeBase91 } from '../utils/base91'
 
-const CHUNK_SIZE = 20
-
-function uniq(arr) { const s = new Set(arr); return [...s] }
-function sampleWithoutReplacement(pool, k, excludeSet) {
-  const filtered = !excludeSet ? [...pool] : pool.filter(i => !excludeSet.has(i))
-  if (k >= filtered.length) return [...filtered]
-  const a = [...filtered]
+// Helper utils
+function uniq(arr) {
+  const s = new Set(arr)
+  return Array.from(s)
+}
+function sampleWithoutReplacement(src, n, exclude=new Set()) {
+  const pool = src.filter(i => !exclude.has(i))
+  if (n <= 0 || pool.length === 0) return []
+  // Fisher-Yates partial shuffle
+  const a = pool.slice()
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[a[i], a[j]] = [a[j], a[i]]
   }
-  return a.slice(0, k)
+  return a.slice(0, Math.min(n, a.length))
 }
-function diff(a, bSet) { return a.filter(x => !bSet.has(x)) }
-function unionMany(groups) { const s = new Set(); for (const g of groups) for (const i of g) s.add(i); return [...s] }
 
 export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [words, setWords] = useState([])
@@ -36,7 +35,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [pendingOutcome, setPendingOutcome] = useState(null) // 'pass' | 'fail'
   const [loading, setLoading] = useState(true)
 
-  // Audio state/cache for Studied modal
+  // === Audio state/cache for Studied modal ===
   const [playingIdx, setPlayingIdx] = useState(null)
   const audioCacheRef = React.useRef(new Map()) // idx -> { url, mime }
   const currentAudioRef = React.useRef(null)
@@ -49,17 +48,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
       const data = await res.json()
       setWords(data)
       const saved = localStorage.getItem(progressKey)
-      let p = saved ? JSON.parse(saved) : {}
-      // Backfill defaults
-      if (!Array.isArray(p.studiedIdxs)) p.studiedIdxs = []
-      if (!Array.isArray(p.groups)) p.groups = []                // chunk mode groups
-      if (typeof p.nextNewPtr !== 'number') p.nextNewPtr = 0     // for chunk mode
-      if (!('showReading' in p)) p.showReading = true
-      if (!('showMeaning' in p)) p.showMeaning = true
-      // Old-logic pool
-      if (!Array.isArray(p.selectedIdxs)) p.selectedIdxs = []
-      if (typeof p.poolSize !== 'number') p.poolSize = 0
-      setProgress(p)
+      if (saved) setProgress(JSON.parse(saved))
       setLoading(false)
     }
     load()
@@ -70,120 +59,62 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     localStorage.setItem(progressKey, JSON.stringify(p))
   }
 
-  // First-time init if neither selectedIdxs nor poolSize defined
+  // Ensure default fields exist
   useEffect(() => {
     if (!progress || words.length === 0) return
-    const hasSelection = progress.selectedIdxs && progress.selectedIdxs.length > 0
-    const hasPool = (progress.poolSize || 0) > 0
-    if (hasSelection || hasPool) return
-    const count = Math.min(words.length, config.initialCount || 5)
-    if (count > 0) {
+    let needsSave = false
+    const p = { ...progress }
+    if (!Array.isArray(p.studiedIdxs)) { p.studiedIdxs = []; needsSave = true }
+    if (!Array.isArray(p.selectedIdxs)) { p.selectedIdxs = []; needsSave = true }
+    if (typeof p.poolSize !== 'number') { p.poolSize = Math.min(words.length, config.initialCount || 5); needsSave = true }
+    if (!Array.isArray(p.groups)) { p.groups = []; needsSave = true }
+    if (!Array.isArray(p.reservoir)) { p.reservoir = []; needsSave = true }
+    if (!Array.isArray(p.newPool)) {
+      const allIdx = Array.from({ length: words.length }, (_, i) => i)
+      const studiedSet = new Set(p.studiedIdxs)
+      p.newPool = allIdx.filter(i => !studiedSet.has(i))
+      needsSave = true
+    }
+    if (!Array.isArray(p.currentSet)) { p.currentSet = []; needsSave = true }
+
+    // Keep reservoir consistent = studied - union(groups)
+    const union = new Set([].concat(...p.groups))
+    const needReserv = p.studiedIdxs.some(i => !union.has(i)) || p.reservoir.some(i => union.has(i) === true)
+    if (needReserv) {
+      p.reservoir = p.studiedIdxs.filter(i => !union.has(i))
+      needsSave = true
+    }
+
+    if (needsSave) saveProgress(p)
+  }, [progress, words, config.initialCount])
+
+  // Initialize random selection on first run (legacy behavior)
+  useEffect(() => {
+    if (!progress || words.length === 0) return
+    // If no selection and we haven't crossed chunking threshold, seed initial selection
+    const studiedCount = progress.studiedIdxs?.length || 0
+    const chunkingActive = studiedCount > 20
+    if (!chunkingActive && (!progress.selectedIdxs || progress.selectedIdxs.length === 0)) {
+      const count = Math.min(words.length, config.initialCount || 5)
       const idxs = Array.from({ length: words.length }, (_, i) => i)
-      const selected = sampleWithoutReplacement(idxs, count)
-      saveProgress({ ...progress, selectedIdxs: selected, poolSize: selected.length })
+      for (let i = idxs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[idxs[i], idxs[j]] = [idxs[j], idxs[i]]
+      }
+      const selected = idxs.slice(0, count)
+      const p = { ...progress, selectedIdxs: selected, poolSize: selected.length }
+      saveProgress(p)
     }
   }, [progress, words, config.initialCount])
 
-  // Helpers
-  function getSmallPoolIdxs(p) {
-    if (p.selectedIdxs && p.selectedIdxs.length > 0) return [...p.selectedIdxs]
-    return []
-  }
-  function shouldUseChunks(p) {
-    const size = (p.selectedIdxs && p.selectedIdxs.length > 0) ? p.selectedIdxs.length : (p.poolSize || 0)
-    return size > CHUNK_SIZE // only when pool > 20
-  }
-
-  // Chunk mode picker
-  function pickNextNew(p, excludeSet) {
-    const total = words.length
-    if (total === 0) return null
-    for (let pass = 0; pass < 2; pass++) {
-      for (let i = p.nextNewPtr; i < total; i++) {
-        if (!p.studiedIdxs.includes(i) && !excludeSet.has(i)) {
-          p.nextNewPtr = (i + 1) % total
-          return i
-        }
-      }
-      p.nextNewPtr = 0
-    }
-    return null
-  }
-  function buildRecallSetChunk(p) {
-    if (!words.length) return []
-    if (p.currentSet && p.currentSet.length) return p.currentSet
-
-    const exclude = new Set()
-    const unionGroups = unionMany(p.groups)
-    const setInGroups = new Set(unionGroups)
-    const reservoir = diff(p.studiedIdxs, setInGroups) // studied but not grouped
-
-    const newIdx = pickNextNew(p, exclude)
-    const newCount = (newIdx !== null) ? 1 : 0
-    if (newCount === 1) exclude.add(newIdx)
-    const base = Math.max(0, CHUNK_SIZE - newCount) // 19 if 1 new
-
-    let fromGroups = Math.floor(base * 0.6) // 11
-    let fromReserv = base - fromGroups      // 8
-
-    const pickG = sampleWithoutReplacement(unionGroups, fromGroups, exclude)
-    pickG.forEach(i => exclude.add(i))
-    const pickR = sampleWithoutReplacement(reservoir, fromReserv, exclude)
-    pickR.forEach(i => exclude.add(i))
-
-    let selected = uniq([...pickG, ...pickR])
-
-    // Top-up if lacking
-    while (selected.length < base) {
-      const moreR = sampleWithoutReplacement(reservoir, 1, new Set(selected))
-      if (moreR.length) { selected.push(moreR[0]); continue }
-      const moreG = sampleWithoutReplacement(unionGroups, 1, new Set(selected))
-      if (moreG.length) { selected.push(moreG[0]); continue }
-      break
-    }
-    while (selected.length < base) {
-      const extraNew = pickNextNew(p, new Set([...selected, ...(newCount ? [newIdx] : [])]))
-      if (extraNew === null) break
-      selected.push(extraNew)
-    }
-
-    if (newCount === 1 && !selected.includes(newIdx)) selected.push(newIdx)
-    selected = selected.slice(0, CHUNK_SIZE)
-
-    p.currentSet = selected
-    return selected
-  }
-
-  // Build presentation set whenever we enter 'present'
+  // Build presentation order whenever the ACTIVE POOL changes
   useEffect(() => {
-    if (!progress || !words.length) return
-    if (mode !== 'present') return
-
-    const p = { ...progress }
-    const hasSelection = p.selectedIdxs && p.selectedIdxs.length > 0
-    const hasPool = (p.poolSize || 0) > 0
-
-    // If small-pool path but selection is empty while poolSize>0, seed immediately and retry on next render
-    const usingChunks = shouldUseChunks(p)
-    if (!usingChunks && !hasSelection && hasPool) {
-      const population = Array.from({ length: words.length }, (_, i) => i)
-      const picked = sampleWithoutReplacement(population, Math.min(p.poolSize, words.length))
-      saveProgress({ ...p, selectedIdxs: picked })
-      return
-    }
-
-    let items = []
-    if (usingChunks) {
-      const set = buildRecallSetChunk(p)
-      if (JSON.stringify(p) !== JSON.stringify(progress)) saveProgress(p)
-      items = set.map(i => words[i])
-    } else {
-      const idxs = getSmallPoolIdxs(p)
-      items = idxs.map(i => words[i])
-    }
-    setPresentationOrder(shuffle(items))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, progress?.currentSet, progress?.selectedIdxs, progress?.poolSize, words])
+    if (!progress || words.length === 0) return
+    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+      ? progress.selectedIdxs.map(i => words[i])
+      : words.slice(0, progress.poolSize)
+    setPresentationOrder(shuffle(currentPool))
+  }, [words, progress?.poolSize, progress?.selectedIdxs])
 
   // Eye menu refs/handlers
   const eyeMenuRef = React.useRef(null);
@@ -191,7 +122,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   useEffect(() => {
     function onKeyDown(e) { if (e.key === 'Escape') setShowEyeMenu(false) }
     function onMouseDown(e) {
-      const menu = eyeMenuRef.current; const btn = eyeButtonRef.current
+      const menu = eyeMenuRef.current, btn = eyeButtonRef.current
       if (!menu) return
       if (menu.contains(e.target) || (btn && btn.contains(e.target))) return
       setShowEyeMenu(false)
@@ -204,52 +135,122 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     }
   }, [])
 
-  // Studied modal: avoid focus, cleanup
+  // Studied modal: no programmatic focus, but ensure cleanup
   useEffect(() => {
     if (showStudied) {
       if (document.activeElement && typeof document.activeElement.blur === 'function') {
-        document.activeElement.blur();
+        document.activeElement.blur()
       }
-      document.body.style.overflow = 'hidden';
-      const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false); };
-      document.addEventListener('keydown', onKey);
+      document.body.style.overflow = 'hidden'
+      const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false) }
+      document.addEventListener('keydown', onKey)
       return () => {
-        document.body.style.overflow = '';
-        document.removeEventListener('keydown', onKey);
-      };
+        document.body.style.overflow = ''
+        document.removeEventListener('keydown', onKey)
+      }
     } else {
       stopAudioAndCleanup()
     }
   }, [showStudied])
 
-  function handleReplay() {
-    setMode('present')
-    const p = progress
-    if (!p) return
-    let items = []
-    if (shouldUseChunks(p)) {
-      const set = p.currentSet || []
-      items = set.map(i => words[i])
-    } else {
-      const idxs = getSmallPoolIdxs(p)
-      items = idxs.map(i => words[i])
+  // === Chunked recall logic (60% groups, 40% reservoir, +1 new) ===
+  function buildRecallSet(p) {
+    const N = 20
+    const studiedCount = p.studiedIdxs?.length || 0
+    if (studiedCount <= 20) return null // not active
+
+    // Recompute reservoir just in case
+    const union = new Set([].concat(...p.groups))
+    const reservoir = p.studiedIdxs.filter(i => !union.has(i))
+
+    const hasNew = (p.newPool && p.newPool.length > 0)
+    const newCount = hasNew ? 1 : 0
+    const base = N - newCount // 19
+    let takeGroups = Math.floor(base * 0.6) // 11
+    let takeReserv = base - takeGroups // 8
+
+    const fromGroupsUnion = uniq([].concat(...p.groups))
+    const ex = new Set() // to ensure no duplicates inside the batch
+    let pickG = sampleWithoutReplacement(fromGroupsUnion, takeGroups, ex)
+    pickG.forEach(i => ex.add(i))
+
+    let pickR = sampleWithoutReplacement(reservoir, takeReserv, ex)
+    pickR.forEach(i => ex.add(i))
+
+    // Top-up if shortage due to collisions or small pools
+    while (pickG.length + pickR.length < base) {
+      // Prefer reservoir first
+      const need = base - (pickG.length + pickR.length)
+      const topR = sampleWithoutReplacement(reservoir, need, ex)
+      topR.forEach(i => ex.add(i))
+      pickR = pickR.concat(topR)
+      if (pickG.length + pickR.length >= base) break
+      const topG = sampleWithoutReplacement(fromGroupsUnion, need - topR.length, ex)
+      topG.forEach(i => ex.add(i))
+      pickG = pickG.concat(topG)
+      if (pickG.length + pickR.length >= base) break
+      // if still short, break (not enough items)
+      break
     }
-    setPresentationOrder(shuffle(items))
+
+    let selected = uniq([...pickG, ...pickR])
+
+    if (hasNew) {
+      // Take the first newPool index that's not yet in selected
+      let newIdx = null
+      for (const v of p.newPool) { if (!ex.has(v)) { newIdx = v; break } }
+      if (newIdx != null) selected.push(newIdx)
+    }
+
+    // Clip to N just in case
+    selected = selected.slice(0, N)
+    return selected
+  }
+
+  // Keep selectedIdxs in sync with chunked currentSet
+  useEffect(() => {
+    if (!progress || words.length === 0) return
+    const studiedCount = progress.studiedIdxs?.length || 0
+    const chunkingActive = studiedCount > 20
+    if (!chunkingActive) return
+
+    let p = { ...progress }
+    // If we don't have a currentSet (or it's empty), build one
+    if (!Array.isArray(p.currentSet) || p.currentSet.length === 0) {
+      const next = buildRecallSet(p)
+      if (next && next.length) {
+        p.currentSet = next
+        p.selectedIdxs = next
+        p.poolSize = next.length
+        saveProgress(p)
+      }
+      return
+    }
+    // Ensure selectedIdxs mirrors currentSet
+    const a = p.selectedIdxs || []
+    const b = p.currentSet || []
+    const same = (a.length === b.length) && a.every((v, i) => v === b[i])
+    if (!same) {
+      p.selectedIdxs = b.slice()
+      p.poolSize = b.length
+      saveProgress(p)
+    }
+  }, [progress?.currentSet, progress?.studiedIdxs, words])
+
+  function handleReplay() {
+    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+      ? progress.selectedIdxs.map(i => words[i])
+      : words.slice(0, progress.poolSize)
+    setPresentationOrder(shuffle(currentPool))
+    setMode('present')
   }
 
   function handleSubmitRecall(lines) {
-    const p = progress
-    if (!p) return
-    let currentPool = []
+    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+      ? progress.selectedIdxs.map(i => words[i])
+      : words.slice(0, progress.poolSize)
 
-    if (shouldUseChunks(p)) {
-      const set = p.currentSet || []
-      currentPool = set.map(i => words[i])
-    } else {
-      const idxs = getSmallPoolIdxs(p)
-      currentPool = idxs.map(i => words[i])
-    }
-
+    // Build sets of acceptable answers
     const targets = new Map()
     currentPool.forEach((w, idx) => {
       targets.set(normalize(w.word), idx)
@@ -258,6 +259,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
     const answeredSet = new Set(lines.map(normalize).filter(Boolean))
 
+    // Evaluate: all unique targets must be present (per word at least one of kanji/hiragana)
     const poolMust = new Set(currentPool.map(w => normalize(w.word)))
     const ok = [...poolMust].every(base => {
       const w = currentPool.find(x => normalize(x.word) === base)
@@ -279,73 +281,29 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     setShowModal(true)
   }
 
-  function applyOutcomeAndContinue() {
-    if (!pendingOutcome) { setShowModal(false); return }
-    const p = { ...progress }
-    p.round = (p.round || 1) + 1
-
-    if (shouldUseChunks(p)) {
-      const set = p.currentSet || []
-      if (pendingOutcome === 'pass') {
-        if (set.length) p.groups = [...(p.groups || []), [...set]]
-        const s = new Set(p.studiedIdxs || [])
-        set.forEach(i => s.add(i))
-        p.studiedIdxs = [...s]
-        p.currentSet = null
-      } else {
-        // fail: keep currentSet
-      }
-    } else {
-      // Old logic for small pool (≤20): grow selectedIdxs by config.increment on pass
-      const idxs = getSmallPoolIdxs(p)
-      if (pendingOutcome === 'pass') {
-        // Mark studied
-        const s = new Set(p.studiedIdxs || [])
-        idxs.forEach(i => s.add(i))
-        // Add new words to selection
-        const currentSet = new Set(p.selectedIdxs || [])
-        const allIdx = Array.from({ length: words.length }, (_, i) => i)
-        const remaining = allIdx.filter(i => !currentSet.has(i))
-        for (let i = remaining.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1))
-          ;[remaining[i], remaining[j]] = [remaining[j], remaining[i]]
-        }
-        const addCount = Math.min(config.increment || 1, remaining.length)
-        const added = remaining.slice(0, addCount)
-        const newSelected = [...currentSet, ...added]
-        p.selectedIdxs = newSelected
-        p.poolSize = newSelected.length
-        p.studiedIdxs = [...s]
-      } else {
-        // fail: keep same set
-      }
-    }
-
-    setPendingOutcome(null)
-    setShowModal(false)
-    saveProgress(p)
-    setMode('present')
-  }
-
   // Audio helpers
   function sniffMime(bytes) {
-    if (bytes.length >= 3 && bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) return 'audio/mpeg'
-    if (bytes.length >= 2 && bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) return 'audio/mpeg'
-    if (bytes.length >= 4 && bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) return 'audio/ogg'
-    if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45) return 'audio/wav'
-    if (bytes.length >= 4 && bytes[0] === 0x66 && bytes[1] === 0x4C && bytes[2] === 0x61 && bytes[3] === 0x43) return 'audio/flac'
-    if (bytes.length >= 8 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return 'audio/mp4'
+    if (bytes.length >= 3 && bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) return 'audio/mpeg' // ID3
+    if (bytes.length >= 2 && bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) return 'audio/mpeg' // MP3 frame
+    if (bytes.length >= 4 && bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) return 'audio/ogg' // OggS
+    if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45) return 'audio/wav' // RIFF....WAVE
+    if (bytes.length >= 4 && bytes[0] === 0x66 && bytes[1] === 0x4C && bytes[2] === 0x61 && bytes[3] === 0x43) return 'audio/flac' // fLaC
+    if (bytes.length >= 8 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return 'audio/mp4' // ftyp
     return 'audio/mpeg'
   }
   function stopAudioAndCleanup() {
     const a = currentAudioRef.current
-    if (a) { try { a.pause() } catch {} ; currentAudioRef.current = null }
-    setPlayingIdx(null)
+    if (a) {
+      try { a.pause() } catch {}
+      currentAudioRef.current = null
+    }
+    if (playingIdx !== null) setPlayingIdx(null)
   }
   async function togglePlay(idx) {
     if (playingIdx === idx) { stopAudioAndCleanup(); return }
     stopAudioAndCleanup()
-    const w = words[idx]; if (!w || !w.speech) return
+    const w = words[idx]
+    if (!w || !w.speech) return
     let entry = audioCacheRef.current.get(idx)
     if (!entry) {
       const bytes = decodeBase91(w.speech)
@@ -358,23 +316,108 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     currentAudioRef.current = audio
     setPlayingIdx(idx)
     audio.onended = () => { setPlayingIdx(null); currentAudioRef.current = null }
-    audio.onerror  = () => { setPlayingIdx(null); currentAudioRef.current = null }
-    try { await audio.play() } catch (e) { setPlayingIdx(null); currentAudioRef.current = null; console.error('Audio play error', e) }
+    audio.onerror = () => { setPlayingIdx(null); currentAudioRef.current = null }
+    try { await audio.play() } catch (e) {
+      setPlayingIdx(null); currentAudioRef.current = null; console.error('Audio play error', e)
+    }
   }
   useEffect(() => {
     return () => {
       stopAudioAndCleanup()
-      for (const { url } of audioCacheRef.current.values()) { try { URL.revokeObjectURL(url) } catch {} }
+      for (const { url } of audioCacheRef.current.values()) {
+        try { URL.revokeObjectURL(url) } catch {}
+      }
       audioCacheRef.current.clear()
     }
   }, [])
 
+  function applyOutcomeAndContinue() {
+    if (!pendingOutcome) { setShowModal(false); return }
+
+    const studiedBefore = progress.studiedIdxs || []
+    const studiedSet = new Set(studiedBefore)
+    const currentPoolIdxs = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+      ? [...progress.selectedIdxs]
+      : Array.from({ length: progress.poolSize }, (_, i) => i)
+
+    const studiedCount = studiedBefore.length
+    const chunkingActive = studiedCount > 20 || (studiedCount <= 20 && (studiedCount + currentPoolIdxs.length) > 20)
+    // Note: the second condition handles the exact moment we cross 20 after this pass.
+
+    if (pendingOutcome === 'pass') {
+      // Mark all in current pool as studied
+      currentPoolIdxs.forEach(i => studiedSet.add(i))
+
+      if (chunkingActive) {
+        // === Chunk mode ===
+        // Build new groups/reservoir/newPool
+        const prevGroups = Array.isArray(progress.groups) ? progress.groups.slice() : []
+        const newGroup = currentPoolIdxs.slice(0, 20) // safety
+        if (newGroup.length > 0) prevGroups.push(newGroup)
+
+        const newStudied = Array.from(studiedSet)
+        // newPool = all - studied
+        const allIdx = Array.from({ length: words.length }, (_, i) => i)
+        let newPool = Array.isArray(progress.newPool) ? progress.newPool.filter(i => !newGroup.includes(i)) : allIdx.filter(i => !studiedSet.has(i))
+        // reservoir = studied - union(groups)
+        const union = new Set([].concat(...prevGroups))
+        const reservoir = newStudied.filter(i => !union.has(i))
+
+        // Clear currentSet and build the next one
+        let p = {
+          ...progress,
+          studiedIdxs: newStudied,
+          groups: prevGroups,
+          reservoir,
+          newPool,
+          currentSet: [],
+          selectedIdxs: [],
+          poolSize: 0,
+          round: (progress.round || 1) + 1
+        }
+        // Immediately compute next batch
+        const next = buildRecallSet(p)
+        if (next && next.length) {
+          p.currentSet = next
+          p.selectedIdxs = next
+          p.poolSize = next.length
+        }
+        saveProgress(p)
+      } else {
+        // === Legacy mode (<=20) ===
+        const currentSet = new Set(progress.selectedIdxs || [])
+        const allIdx = Array.from({ length: words.length }, (_, i) => i)
+        const remaining = allIdx.filter(i => !currentSet.has(i))
+        for (let i = remaining.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[remaining[i], remaining[j]] = [remaining[j], remaining[i]]
+        }
+        const addCount = Math.min(config.increment || 1, remaining.length)
+        const added = remaining.slice(0, addCount)
+        const newSelected = [...currentSet, ...added]
+        saveProgress({
+          ...progress,
+          studiedIdxs: Array.from(studiedSet),
+          selectedIdxs: newSelected,
+          poolSize: newSelected.length,
+          round: (progress.round || 1) + 1
+        })
+      }
+    } else {
+      // fail: keep pool, only advance round
+      saveProgress({ ...progress, round: (progress.round || 1) + 1 })
+    }
+
+    setPendingOutcome(null)
+    setShowModal(false)
+    setMode('present')
+  }
+
   if (loading || !progress) return null
 
-  // UI pool for recall screen
-  const usingChunks = shouldUseChunks(progress)
-  const uiIdxs = usingChunks ? (progress.currentSet || []) : getSmallPoolIdxs(progress)
-  const uiPool = uiIdxs.map(i => words[i])
+  const uiPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+    ? progress.selectedIdxs.map(i => words[i])
+    : words.slice(0, progress.poolSize)
 
   return (
     <div className="flex-1 flex flex-col">
@@ -406,9 +449,25 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
               </div>
             )}
             <div className="modal-actions">
-              <button className="icon-btn" onClick={() => { applyOutcomeAndContinue(); }}>
-                {lastResult.pass ? 'Continue' : 'Retry'}
-              </button>
+              {lastResult.pass ? (
+                <button
+                  className="icon-btn"
+                  onClick={() => { applyOutcomeAndContinue(); }}
+                  title="Continue"
+                  aria-label="Continue"
+                >
+                  Continue
+                </button>
+              ) : (
+                <button
+                  className="icon-btn"
+                  onClick={() => { applyOutcomeAndContinue(); }}
+                  title="Retry"
+                  aria-label="Retry"
+                >
+                  Retry
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -428,7 +487,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
             title="View studied list"
             aria-label="View studied list"
           >
-            Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : 0)}
+            Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}
           </button>
           <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">
             Speed: {config.speedMs}ms
@@ -438,7 +497,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          {/* eye menu */}
+          {/* eye menu (reading/meaning) */}
           <div className="relative">
             <button
               ref={eyeButtonRef}
@@ -451,6 +510,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
             >
               <Eye />
             </button>
+
             {showEyeMenu && (
               <div
                 ref={eyeMenuRef}
@@ -464,7 +524,11 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                     type="checkbox"
                     className="form-checkbox"
                     checked={!progress.showReading}
-                    onChange={(e) => { const hide = e.target.checked; const p = { ...progress, showReading: !hide }; saveProgress(p) }}
+                    onChange={(e) => {
+                      const hide = e.target.checked
+                      const p = { ...progress, showReading: !hide }
+                      saveProgress(p)
+                    }}
                   />
                   <span className="flex-1 text-sm">Hide reading</span>
                   <span className="badge-mini">あ</span>
@@ -474,7 +538,11 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                     type="checkbox"
                     className="form-checkbox"
                     checked={!progress.showMeaning}
-                    onChange={(e) => { const hide = e.target.checked; const p = { ...progress, showMeaning: !hide }; saveProgress(p) }}
+                    onChange={(e) => {
+                      const hide = e.target.checked
+                      const p = { ...progress, showMeaning: !hide }
+                      saveProgress(p)
+                    }}
                   />
                   <span className="flex-1 text-sm">Hide meaning</span>
                   <span className="badge-mini">訳</span>
@@ -482,9 +550,12 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
               </div>
             )}
           </div>
+
+          {/* replay/present */}
           <button className="icon-btn" onClick={handleReplay} title="Replay presentation" aria-label="Replay">
             <Repeat />
           </button>
+          {/* reset */}
           <button className="icon-btn" onClick={onReset} title="Reset" aria-label="Reset">
             <RotateCcw />
           </button>
@@ -493,6 +564,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
       {/* Body */}
       <div className="flex-1 flex flex-col px-4 pb-4">
+
         {showStudied && (
           <div className="modal-overlay" onClick={() => setShowStudied(false)} role="dialog" aria-modal="true" aria-label="Studied words">
             <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -504,8 +576,10 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                 {(progress.studiedIdxs && progress.studiedIdxs.length > 0) ? (
                   <ul className="studied-list space-y-3">
                     {progress.studiedIdxs.map((i, k) => {
-                      const w = words[i]; if (!w) return null
-                      const playable = !!w.speech; const isPlaying = playingIdx === i
+                      const w = words[i]
+                      if (!w) return null
+                      const playable = !!w.speech
+                      const isPlaying = playingIdx === i
                       return (
                         <li key={k} className="studied-item p-3 rounded-lg border border-neutral-700 bg-neutral-900">
                           <div className="studied-row-top flex items-center justify-between text-sm">
@@ -556,9 +630,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           <div className="flex-1 flex flex-col" style={{ paddingTop: 'var(--top-offset-vh)' }}>
             <div className="flex items-center justify-center gap-2 mb-3 text-neutral-300">
               <ListChecks />
-              <span className="text-sm">
-                Retype {uiPool.length || CHUNK_SIZE} words (order doesn't matter)
-              </span>
+              <span className="text-sm">Retype {uiPool.length} words (order doesn't matter)</span>
             </div>
             {/* No programmatic focus */}
             <Recall targets={uiPool} onSubmit={handleSubmitRecall} />
@@ -582,7 +654,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                     </div>
                   </div>
                 )}
-                {lastResult.extras && lastResult.extras.length > 0 && (
+                {lastResult.extras.length > 0 && (
                   <div>
                     <div className="mb-1 opacity-80">Not in the list:</div>
                     <div className="flex flex-wrap gap-2 justify-center">
@@ -594,6 +666,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                 )}
               </div>
             )}
+
             <div className="flex gap-3 pt-2">
               <button className="icon-btn" onClick={handleReplay} title="Next round" aria-label="Next round">
                 <Presentation />
