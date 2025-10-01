@@ -259,8 +259,8 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           >
             Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}
           </button>
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Speed: {config.speedMs}ms</span>
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Round: {progress.round || 1}</span>
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Speed: {config.speedMs}ms</span>
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Round: {progress.round || 1}</span>
         </div>
         <div className="flex items-center gap-2">
           {/* eye menu (reading/meaning) */}
