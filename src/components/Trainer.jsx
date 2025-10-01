@@ -1,7 +1,7 @@
 // src/components/Trainer.jsx
-// - Chunked recall (20 words, 60% groups + 40% reservoir + 1 new) ONLY when pool > 20
-// - Otherwise fallback to old logic (use selectedIdxs/poolSize and increment growth)
-// - Keeps: Studied audio (base91), Eye menu, no autofocus
+// Fix: when poolSize=1 and user chose 1 word, don't default to index 0.
+//      Only use selectedIdxs; if empty but poolSize>0, seed selectedIdxs randomly once.
+// Gate chunked recall to pool > 20. Keep audio-in-Studied, eye menu, and no autofocus.
 import React, { useEffect, useState } from 'react'
 import { Eye, RotateCcw, Repeat, Presentation, ListChecks, Volume2, Square } from 'lucide-react'
 import RSVPDisplay from './RSVPDisplay'
@@ -66,34 +66,49 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     load()
   }, [progressKey])
 
-  // Initialize old-logic selection when empty
-  useEffect(() => {
-    if (!progress || words.length === 0) return
-    if (!progress.selectedIdxs || progress.selectedIdxs.length === 0) {
-      const count = Math.min(words.length, config.initialCount || 5)
-      const idxs = Array.from({ length: words.length }, (_, i) => i)
-      for (let i = idxs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[idxs[i], idxs[j]] = [idxs[j], idxs[i]]
-      }
-      const selected = idxs.slice(0, count)
-      saveProgress({ ...progress, selectedIdxs: selected, poolSize: selected.length })
-    }
-  }, [progress, words, config.initialCount])
-
   function saveProgress(p) {
     setProgress(p)
     localStorage.setItem(progressKey, JSON.stringify(p))
   }
 
+  // Ensure that in small-pool mode, if user/config set poolSize>0 but selectedIdxs is empty,
+  // we seed selectedIdxs once with a random pick (instead of defaulting to [0..poolSize-1]).
+  useEffect(() => {
+    if (!progress || words.length === 0) return
+    // Only when NOT using chunk mode
+    const size = (progress.poolSize || 0)
+    const hasSelection = Array.isArray(progress.selectedIdxs) && progress.selectedIdxs.length > 0
+    const usingChunks = (hasSelection ? progress.selectedIdxs.length : size) > CHUNK_SIZE
+    if (usingChunks) return
+    if (!hasSelection && size > 0) {
+      const population = Array.from({ length: words.length }, (_, i) => i)
+      const picked = sampleWithoutReplacement(population, Math.min(size, words.length))
+      saveProgress({ ...progress, selectedIdxs: picked })
+    }
+  }, [progress, words])
+
+  // Initialize from config.initialCount only when both selectedIdxs and poolSize are empty (first run)
+  useEffect(() => {
+    if (!progress || words.length === 0) return
+    const hasSelection = progress.selectedIdxs && progress.selectedIdxs.length > 0
+    const hasPool = (progress.poolSize || 0) > 0
+    if (hasSelection || hasPool) return
+    const count = Math.min(words.length, config.initialCount || 5)
+    if (count > 0) {
+      const idxs = Array.from({ length: words.length }, (_, i) => i)
+      const selected = sampleWithoutReplacement(idxs, count)
+      saveProgress({ ...progress, selectedIdxs: selected, poolSize: selected.length })
+    }
+  }, [progress, words, config.initialCount])
+
   // Helpers: small-pool (old logic) and gate to chunk mode
   function getSmallPoolIdxs(p) {
     if (p.selectedIdxs && p.selectedIdxs.length > 0) return [...p.selectedIdxs]
-    if (p.poolSize && p.poolSize > 0) return Array.from({ length: Math.min(p.poolSize, words.length) }, (_, i) => i)
+    // If still empty here, treat as no items (better than forcing index 0).
     return []
   }
   function shouldUseChunks(p) {
-    const size = getSmallPoolIdxs(p).length
+    const size = (p.selectedIdxs && p.selectedIdxs.length > 0) ? p.selectedIdxs.length : (p.poolSize || 0)
     return size > CHUNK_SIZE // only when pool > 20
   }
 
@@ -287,7 +302,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
         // fail: keep currentSet
       }
     } else {
-      // Old logic for small pool (<=20): grow selectedIdxs by config.increment on pass
+      // Old logic for small pool (≤20): grow selectedIdxs by config.increment on pass
       const idxs = getSmallPoolIdxs(p)
       if (pendingOutcome === 'pass') {
         // Mark studied
@@ -510,7 +525,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                               >
                                 {isPlaying ? <Square /> : <Volume2 />}
                               </button>
-                              <span className="word font-medium text-3xl">{w.word}</span>
+                              <span className="word font-medium text-lg">{w.word}</span>
                               <span className="reading text-neutral-400">{w.reading}</span>
                             </div>
                           </div>
@@ -525,6 +540,9 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                 ) : (
                   <div className="empty text-sm text-neutral-400">No studied words yet.</div>
                 )}
+              </div>
+              <div className="modal-actions">
+                <button className="icon-btn" onClick={() => setShowStudied(false)}>Close</button>
               </div>
             </div>
           </div>
