@@ -1,8 +1,10 @@
+// src/components/Trainer.jsx (patched: add audio playback in Studied list)
 import React, { useEffect, useMemo, useState } from 'react'
-import { Eye, ListChecks, Presentation, Repeat, RotateCcw, Square, Volume2 } from 'lucide-react'
+import { Eye, RotateCcw, Repeat, Presentation, ListChecks, Volume2, Square } from 'lucide-react'
 import RSVPDisplay from './RSVPDisplay'
 import Recall from './Recall'
 import { shuffle, normalize } from '../utils/shuffle'
+import { decodeBase91 } from '../utils/base91'
 
 export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [words, setWords] = useState([])
@@ -12,9 +14,14 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [lastResult, setLastResult] = useState(null) // {pass, missing, extras}
   const [showModal, setShowModal] = useState(false)
   const [showEyeMenu, setShowEyeMenu] = useState(false)
+  const [showStudied, setShowStudied] = useState(false)
   const [pendingOutcome, setPendingOutcome] = useState(null) // 'pass' | 'fail'
   const [loading, setLoading] = useState(true)
-  const [showStudied, setShowStudied] = useState(false)
+
+  // === NEW: audio state/cache ===
+  const [playingIdx, setPlayingIdx] = useState(null)
+  const audioCacheRef = React.useRef(new Map()) // idx -> { url, mime }
+  const currentAudioRef = React.useRef(null)
 
   // Load data + progress
   useEffect(() => {
@@ -29,6 +36,13 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     }
     load()
   }, [progressKey])
+
+  // Ensure studiedIdxs exists
+  useEffect(() => {
+    if (progress && !Array.isArray(progress.studiedIdxs)) {
+      saveProgress({ ...progress, studiedIdxs: [] })
+    }
+  }, [progress])
 
   // Initialize random selection on first run (if missing)
   useEffect(() => {
@@ -47,145 +61,60 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   }, [progress, words, config.initialCount])
 
   // Prepare presentation order when the ACTIVE POOL changes (not on UI toggles)
-useEffect(() => {
-  if (!progress || words.length === 0) return
-  const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-    ? progress.selectedIdxs.map(i => words[i])
-    : words.slice(0, progress.poolSize)
-  setPresentationOrder(shuffle(currentPool))
-  // NOTE: do NOT auto-switch mode here; avoid unintended jumps when toggling UI flags.
-}, [words, progress?.poolSize, progress?.selectedIdxs])
+  useEffect(() => {
+    if (!progress || words.length === 0) return
+    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+      ? progress.selectedIdxs.map(i => words[i])
+      : words.slice(0, progress.poolSize)
+    setPresentationOrder(shuffle(currentPool))
+    // NOTE: do NOT auto-switch mode here; avoid unintended jumps when toggling UI flags.
+  }, [words, progress?.poolSize, progress?.selectedIdxs])
 
-  
-const eyeMenuRef = React.useRef(null);
-const eyeButtonRef = React.useRef(null);
+  // Eye menu refs/handlers
+  const eyeMenuRef = React.useRef(null);
+  const eyeButtonRef = React.useRef(null);
 
-useEffect(() => {
-  function onKeyDown(e) {
-    if (e.key === 'Escape') setShowEyeMenu(false);
-  }
-  function onMouseDown(e) {
-    const menu = eyeMenuRef.current;
-    const btn = eyeButtonRef.current;
-    if (!menu) return;
-    if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
-    setShowEyeMenu(false);
-  }
-  document.addEventListener('keydown', onKeyDown);
-  document.addEventListener('mousedown', onMouseDown);
-  return () => {
-    document.removeEventListener('keydown', onKeyDown);
-    document.removeEventListener('mousedown', onMouseDown);
-  };
-}, []);
-
-
-// ---- Audio (base91 → Blob → Audio) ----
-const audioCacheRef = React.useRef(new Map())
-
-function decodeBase91(str) {
-  const ENCODING_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
-  const DEC = new Array(256).fill(-1)
-  for (let i = 0; i < ENCODING_TABLE.length; i++) DEC[ENC.charCodeAt(i)] = i
-  let v = -1, b = 0, n = 0
-  const out = []
-  for (let i = 0; i < str.length; i++) {
-    const c = str.charCodeAt(i)
-    const d = DEC[c]
-    if (d === -1) continue // skip non-table chars
-    if (v < 0) v = d
-    else {
-      v += d * 91
-      b |= v << n
-      n += (v & 8191) > 88 ? 13 : 14
-      do {
-        out.push(b & 0xFF)
-        b >>= 8
-        n -= 8
-      } while (n > 7)
-      v = -1
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.key === 'Escape') setShowEyeMenu(false);
     }
-  }
-  if (v > -1) {
-    out.push((b | (v << n)) & 0xFF)
-  }
-  return new Uint8Array(out)
-}
-
-function sniffMime(bytes) {
-  const text = (o,n) => String.fromCharCode(...bytes.slice(o, o+n))
-  if (text(0,4) === "RIFF" && text(8,4) === "WAVE") return "audio/wav"
-  if (text(0,4) === "OggS") return "audio/ogg"
-  if (text(0,3) === "ID3") return "audio/mpeg"
-  if (bytes.length > 1 && bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) return "audio/mpeg"
-  return "audio/mpeg"
-}
-
-function stopCurrentAudio() {
-  if (playingIdx == null) return
-  const entry = audioCacheRef.current.get(playingIdx)
-  try {
-    if (entry?.audio) {
-      entry.audio.pause()
-      entry.audio.currentTime = 0
+    function onMouseDown(e) {
+      const menu = eyeMenuRef.current;
+      const btn = eyeButtonRef.current;
+      if (!menu) return;
+      if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
+      setShowEyeMenu(false);
     }
-  } catch {}
-  setPlayingIdx(null)
-}
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('mousedown', onMouseDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('mousedown', onMouseDown);
+    };
+  }, []);
 
-async function toggleAudioForIndex(i) {
-  const w = words[i]
-  if (!w || !w.speech) return
-  if (playingIdx === i) {
-    stopCurrentAudio()
-    return
-  }
-  stopCurrentAudio()
-
-  let entry = audioCacheRef.current.get(i)
-  if (!entry) {
-    try {
-      const bytes = decodeBase91(w.speech)
-      const mime = w.speechMime || sniffMime(bytes) || 'audio/mpeg'
-      const blob = new Blob([bytes], { type: mime })
-      const url = URL.createObjectURL(blob)
-      const audio = new Audio(url)
-      audio.addEventListener('ended', () => setPlayingIdx(prev => (prev === i ? null : prev)))
-      audio.addEventListener('error', () => setPlayingIdx(prev => (prev === i ? null : prev)))
-      entry = { url, audio }
-      audioCacheRef.current.set(i, entry)
-    } catch (e) {
-      console.error('audio init failed', e)
-      return
+  // Studied modal: no programmatic focus, but ensure cleanup
+  useEffect(() => {
+    if (showStudied) {
+      // Blur any active input to hide mobile keyboard
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+      // Lock background scroll
+      document.body.style.overflow = 'hidden';
+      const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false); };
+      document.addEventListener('keydown', onKey);
+      return () => {
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', onKey);
+      };
+    } else {
+      // When closing studied, stop audio and cleanup
+      stopAudioAndCleanup()
     }
-  }
-  try {
-    entry.audio.currentTime = 0
-    await entry.audio.play()
-    setPlayingIdx(i)
-  } catch (e) {
-    console.error('audio play failed', e)
-    setPlayingIdx(null)
-  }
-}
+  }, [showStudied])
 
-// Cleanup when closing Studied or unmounting
-useEffect(() => {
-  if (!showStudied) return
-  return () => {
-    for (const [k, entry] of audioCacheRef.current) {
-      try {
-        entry.audio.pause()
-        entry.audio.currentTime = 0
-        URL.revokeObjectURL(entry.url)
-      } catch {}
-    }
-    audioCacheRef.current.clear()
-    setPlayingIdx(null)
-  }
-}, [showStudied])
-
-function saveProgress(p) {
+  function saveProgress(p) {
     setProgress(p)
     localStorage.setItem(progressKey, JSON.stringify(p))
   }
@@ -233,9 +162,17 @@ function saveProgress(p) {
     setMode('result')
     setShowModal(true)
   }
+
   function applyOutcomeAndContinue() {
     if (!pendingOutcome) { setShowModal(false); return }
     if (pendingOutcome === 'pass') {
+      // Update studied list with current pool indices when pass
+      const currentPoolIdxs = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+        ? [...progress.selectedIdxs]
+        : Array.from({ length: progress.poolSize }, (_, i) => i)
+      const studiedSet = new Set(progress.studiedIdxs || [])
+      currentPoolIdxs.forEach(i => studiedSet.add(i))
+
       const currentSet = new Set(progress.selectedIdxs || [])
       const allIdx = Array.from({ length: words.length }, (_, i) => i)
       const remaining = allIdx.filter(i => !currentSet.has(i))
@@ -246,7 +183,7 @@ function saveProgress(p) {
       const addCount = Math.min(config.increment || 1, remaining.length)
       const added = remaining.slice(0, addCount)
       const newSelected = [...currentSet, ...added]
-      saveProgress({ ...progress, selectedIdxs: newSelected, poolSize: newSelected.length, round: (progress.round || 1) + 1 })
+      saveProgress({ ...progress, studiedIdxs: Array.from(studiedSet), selectedIdxs: newSelected, poolSize: newSelected.length, round: (progress.round || 1) + 1 })
     } else {
       // fail: keep pool, only advance round
       saveProgress({ ...progress, round: (progress.round || 1) + 1 })
@@ -256,6 +193,80 @@ function saveProgress(p) {
     setMode('present')
   }
 
+  // === Audio helpers ===
+  function sniffMime(bytes) {
+    if (bytes.length >= 3 && bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) return 'audio/mpeg' // ID3
+    if (bytes.length >= 2 && bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) return 'audio/mpeg' // MP3 frame
+    if (bytes.length >= 4 && bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) return 'audio/ogg' // OggS
+    if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45) return 'audio/wav' // RIFF....WAVE
+    if (bytes.length >= 4 && bytes[0] === 0x66 && bytes[1] === 0x4C && bytes[2] === 0x61 && bytes[3] === 0x43) return 'audio/flac' // fLaC
+    if (bytes.length >= 8 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return 'audio/mp4' // ftyp
+    return 'audio/mpeg'
+  }
+
+  function stopAudioAndCleanup() {
+    const a = currentAudioRef.current
+    if (a) {
+      try { a.pause() } catch {}
+      currentAudioRef.current = null
+    }
+    if (playingIdx !== null) setPlayingIdx(null)
+  }
+
+  async function togglePlay(idx) {
+    // If same index is playing -> stop
+    if (playingIdx === idx) {
+      stopAudioAndCleanup()
+      return
+    }
+
+    // Stop any current audio first
+    stopAudioAndCleanup()
+
+    const w = words[idx]
+    if (!w || !w.speech) return
+
+    let entry = audioCacheRef.current.get(idx)
+    if (!entry) {
+      const bytes = decodeBase91(w.speech)
+      const mime = w.speechMime || sniffMime(bytes)
+      const url = URL.createObjectURL(new Blob([bytes], { type: mime }))
+      entry = { url, mime }
+      audioCacheRef.current.set(idx, entry)
+    }
+
+    const audio = new Audio(entry.url)
+    currentAudioRef.current = audio
+    setPlayingIdx(idx)
+    audio.onended = () => {
+      setPlayingIdx(null)
+      currentAudioRef.current = null
+    }
+    audio.onerror = () => {
+      setPlayingIdx(null)
+      currentAudioRef.current = null
+    }
+    try {
+      await audio.play()
+    } catch (e) {
+      // Playback blocked or error; reset state
+      setPlayingIdx(null)
+      currentAudioRef.current = null
+      console.error('Audio play error', e)
+    }
+  }
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopAudioAndCleanup()
+      // Revoke all cached URLs
+      for (const { url } of audioCacheRef.current.values()) {
+        try { URL.revokeObjectURL(url) } catch {}
+      }
+      audioCacheRef.current.clear()
+    }
+  }, [])
 
   if (loading || !progress) return null
 
@@ -319,10 +330,26 @@ function saveProgress(p) {
 
       {/* Header */}
       <div className="flex items-center justify-between p-3 sm:p-4">
-        <div className="flex items-center gap-2 text-sm text-neutral-300">
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Round: {progress.round || 1}</span>
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Studied: {(progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize)}</span>
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Speed: {config.speedMs}ms</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2 text-sm text-neutral-300">
+          <button
+            className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hover:bg-neutral-700 transition"
+            onClick={() => {
+              if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+              }
+              setShowStudied(true);
+            }}
+            title="View studied list"
+            aria-label="View studied list"
+          >
+            Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}
+          </button>
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">
+            Speed: {config.speedMs}ms
+          </span>
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 block sm:inline">
+            Round: {progress.round || 1}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           {/* eye menu (reading/meaning) */}
@@ -380,7 +407,6 @@ function saveProgress(p) {
           </div>
 
           {/* replay/present */}
-
           <button className="icon-btn" onClick={handleReplay} title="Replay presentation" aria-label="Replay">
             <Repeat />
           </button>
@@ -393,6 +419,58 @@ function saveProgress(p) {
 
       {/* Body */}
       <div className="flex-1 flex flex-col px-4 pb-4">
+
+        {showStudied && (
+          <div className="modal-overlay" onClick={() => setShowStudied(false)} role="dialog" aria-modal="true" aria-label="Studied words">
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title">Studied Words</div>
+                <button className="modal-close" onClick={() => setShowStudied(false)} aria-label="Close">✕</button>
+              </div>
+              <div className="modal-body max-h-[60vh] overflow-auto">
+                {(progress.studiedIdxs && progress.studiedIdxs.length > 0) ? (
+                  <ul className="studied-list space-y-3">
+                    {progress.studiedIdxs.map((i, k) => {
+                      const w = words[i]
+                      if (!w) return null
+                      const playable = !!w.speech
+                      const isPlaying = playingIdx === i
+                      return (
+                        <li key={k} className="studied-item p-3 rounded-lg border border-neutral-700 bg-neutral-900">
+                          <div className="studied-row-top flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                className={`icon-btn ${!playable ? 'opacity-40 cursor-not-allowed' : ''}`}
+                                aria-label={isPlaying ? 'Stop audio' : 'Play audio'}
+                                title={isPlaying ? 'Stop' : 'Play'}
+                                onClick={() => playable && togglePlay(i)}
+                              >
+                                {isPlaying ? <Square /> : <Volume2 />}
+                              </button>
+                              <span className="word font-medium text-lg">{w.word}</span>
+                              <span className="reading text-neutral-400">{w.reading}</span>
+                            </div>
+                          </div>
+                          <div className="studied-row-bottom text-xs text-neutral-300 mt-1 flex justify-between">
+                            <span className="meaning">{w.meaning}</span>
+                            <span className="pos text-neutral-500">{w.pos}</span>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                ) : (
+                  <div className="empty text-sm text-neutral-400">No studied words yet.</div>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button className="icon-btn" onClick={() => setShowStudied(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {mode === 'present' && (
           <RSVPDisplay
             items={presentationOrder}
@@ -409,6 +487,7 @@ function saveProgress(p) {
               <ListChecks />
               <span className="text-sm">Retype {uiPool.length} words (order doesn't matter)</span>
             </div>
+            {/* No programmatic focus */}
             <Recall targets={uiPool} onSubmit={handleSubmitRecall} />
           </div>
         )}
