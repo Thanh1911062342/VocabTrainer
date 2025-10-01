@@ -14,6 +14,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [showEyeMenu, setShowEyeMenu] = useState(false)
   const [pendingOutcome, setPendingOutcome] = useState(null) // 'pass' | 'fail'
   const [loading, setLoading] = useState(true)
+  const [showStudied, setShowStudied] = useState(false)
 
   // Load data + progress
   useEffect(() => {
