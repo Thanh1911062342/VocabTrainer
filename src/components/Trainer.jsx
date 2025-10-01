@@ -263,8 +263,8 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
       {/* Header */}
       <div className="flex items-center justify-between p-3 sm:p-4">
         <div className="flex items-center gap-2 text-sm text-neutral-300">
-          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Speed: {config.speedMs}ms</span>
           <button className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hover:bg-neutral-700 transition" onClick={() => setShowStudied(true)} title="View studied list" aria-label="View studied list">Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}</button>
+          <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Speed: {config.speedMs}ms</span>
           <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Round: {progress.round || 1}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
               return (
                 <li key={k} className="studied-item">
                   <div className="studied-row-top">
-                    <span className="word text-2xl">{w.word}</span>
+                    <span className="word text-3xl">{w.word}</span>
                     <span className="reading">{w.reading}</span>
                   </div>
                   <div className="studied-row-bottom">
