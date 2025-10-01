@@ -362,9 +362,6 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                   <div className="empty text-sm text-neutral-400">No studied words yet.</div>
                 )}
               </div>
-              <div className="modal-actions">
-                <button className="icon-btn" onClick={() => setShowStudied(false)}>Close</button>
-              </div>
             </div>
           </div>
         )}
