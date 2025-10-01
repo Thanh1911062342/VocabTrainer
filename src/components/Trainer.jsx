@@ -1,7 +1,6 @@
 // src/components/Trainer.jsx
-// Fix: when poolSize=1 and user chose 1 word, don't default to index 0.
-//      Only use selectedIdxs; if empty but poolSize>0, seed selectedIdxs randomly once.
-// Gate chunked recall to pool > 20. Keep audio-in-Studied, eye menu, and no autofocus.
+// Robust small-pool + chunk gate. Fix empty screen by seeding immediately if poolSize>0 but selectedIdxs is empty.
+// Also fix stopAudioAndCleanup, and re-run present effect when selectedIdxs/poolSize change.
 import React, { useEffect, useState } from 'react'
 import { Eye, RotateCcw, Repeat, Presentation, ListChecks, Volume2, Square } from 'lucide-react'
 import RSVPDisplay from './RSVPDisplay'
@@ -71,23 +70,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     localStorage.setItem(progressKey, JSON.stringify(p))
   }
 
-  // Ensure that in small-pool mode, if user/config set poolSize>0 but selectedIdxs is empty,
-  // we seed selectedIdxs once with a random pick (instead of defaulting to [0..poolSize-1]).
-  useEffect(() => {
-    if (!progress || words.length === 0) return
-    // Only when NOT using chunk mode
-    const size = (progress.poolSize || 0)
-    const hasSelection = Array.isArray(progress.selectedIdxs) && progress.selectedIdxs.length > 0
-    const usingChunks = (hasSelection ? progress.selectedIdxs.length : size) > CHUNK_SIZE
-    if (usingChunks) return
-    if (!hasSelection && size > 0) {
-      const population = Array.from({ length: words.length }, (_, i) => i)
-      const picked = sampleWithoutReplacement(population, Math.min(size, words.length))
-      saveProgress({ ...progress, selectedIdxs: picked })
-    }
-  }, [progress, words])
-
-  // Initialize from config.initialCount only when both selectedIdxs and poolSize are empty (first run)
+  // First-time init if neither selectedIdxs nor poolSize defined
   useEffect(() => {
     if (!progress || words.length === 0) return
     const hasSelection = progress.selectedIdxs && progress.selectedIdxs.length > 0
@@ -101,10 +84,9 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     }
   }, [progress, words, config.initialCount])
 
-  // Helpers: small-pool (old logic) and gate to chunk mode
+  // Helpers
   function getSmallPoolIdxs(p) {
     if (p.selectedIdxs && p.selectedIdxs.length > 0) return [...p.selectedIdxs]
-    // If still empty here, treat as no items (better than forcing index 0).
     return []
   }
   function shouldUseChunks(p) {
@@ -112,7 +94,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     return size > CHUNK_SIZE // only when pool > 20
   }
 
-  // Chunk mode: pick 20-word set: 60% from groups, 40% from reservoir, +1 new (if any)
+  // Chunk mode picker
   function pickNextNew(p, excludeSet) {
     const total = words.length
     if (total === 0) return null
@@ -178,8 +160,20 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     if (mode !== 'present') return
 
     const p = { ...progress }
+    const hasSelection = p.selectedIdxs && p.selectedIdxs.length > 0
+    const hasPool = (p.poolSize || 0) > 0
+
+    // If small-pool path but selection is empty while poolSize>0, seed immediately and retry on next render
+    const usingChunks = shouldUseChunks(p)
+    if (!usingChunks && !hasSelection && hasPool) {
+      const population = Array.from({ length: words.length }, (_, i) => i)
+      const picked = sampleWithoutReplacement(population, Math.min(p.poolSize, words.length))
+      saveProgress({ ...p, selectedIdxs: picked })
+      return
+    }
+
     let items = []
-    if (shouldUseChunks(p)) {
+    if (usingChunks) {
       const set = buildRecallSetChunk(p)
       if (JSON.stringify(p) !== JSON.stringify(progress)) saveProgress(p)
       items = set.map(i => words[i])
@@ -189,7 +183,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     }
     setPresentationOrder(shuffle(items))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, progress?.currentSet, words])
+  }, [mode, progress?.currentSet, progress?.selectedIdxs, progress?.poolSize, words])
 
   // Eye menu refs/handlers
   const eyeMenuRef = React.useRef(null);
@@ -346,7 +340,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   function stopAudioAndCleanup() {
     const a = currentAudioRef.current
     if (a) { try { a.pause() } catch {} ; currentAudioRef.current = null }
-    if (setPlayingIdx) setPlayingIdx(null)
+    setPlayingIdx(null)
   }
   async function togglePlay(idx) {
     if (playingIdx === idx) { stopAudioAndCleanup(); return }
