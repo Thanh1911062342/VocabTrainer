@@ -2278,5 +2278,629 @@
     "reading": "なめらか",
     "meaning": "smooth; sleek",
     "pos": "adjective (na)"
+  },
+  {
+    "word": "いつも",
+    "reading": "",
+    "meaning": "always",
+    "pos": "adverb"
+  },
+  {
+    "word": "よく",
+    "reading": "",
+    "meaning": "often; well",
+    "pos": "adverb"
+  },
+  {
+    "word": "たいてい",
+    "reading": "",
+    "meaning": "usually; generally",
+    "pos": "adverb"
+  },
+  {
+    "word": "ときどき",
+    "reading": "",
+    "meaning": "sometimes; from time to time",
+    "pos": "adverb"
+  },
+  {
+    "word": "たまに",
+    "reading": "",
+    "meaning": "occasionally; once in a while",
+    "pos": "adverb"
+  },
+  {
+    "word": "まれに",
+    "reading": "",
+    "meaning": "rarely; seldom",
+    "pos": "adverb"
+  },
+  {
+    "word": "しばしば",
+    "reading": "",
+    "meaning": "frequently; often",
+    "pos": "adverb"
+  },
+  {
+    "word": "しばらく",
+    "reading": "",
+    "meaning": "for a while; temporarily",
+    "pos": "adverb"
+  },
+  {
+    "word": "すぐ",
+    "reading": "",
+    "meaning": "immediately; right away",
+    "pos": "adverb"
+  },
+  {
+    "word": "もうすぐ",
+    "reading": "",
+    "meaning": "soon",
+    "pos": "adverb"
+  },
+  {
+    "word": "やがて",
+    "reading": "",
+    "meaning": "before long; eventually",
+    "pos": "adverb"
+  },
+  {
+    "word": "今",
+    "reading": "いま",
+    "meaning": "now; the present",
+    "pos": "adverb"
+  },
+  {
+    "word": "さっき",
+    "reading": "",
+    "meaning": "a moment ago; earlier",
+    "pos": "adverb"
+  },
+  {
+    "word": "まだ",
+    "reading": "",
+    "meaning": "still; yet; not yet (with negatives)",
+    "pos": "adverb"
+  },
+  {
+    "word": "もう",
+    "reading": "",
+    "meaning": "already; no longer (with negatives)",
+    "pos": "adverb"
+  },
+  {
+    "word": "これから",
+    "reading": "",
+    "meaning": "from now on; hereafter",
+    "pos": "adverb"
+  },
+  {
+    "word": "そろそろ",
+    "reading": "",
+    "meaning": "it's about time; soon",
+    "pos": "adverb"
+  },
+  {
+    "word": "だんだん",
+    "reading": "",
+    "meaning": "gradually; little by little",
+    "pos": "adverb"
+  },
+  {
+    "word": "まず",
+    "reading": "",
+    "meaning": "first (of all); to begin with",
+    "pos": "adverb"
+  },
+  {
+    "word": "次に",
+    "reading": "つぎに",
+    "meaning": "next",
+    "pos": "adverb"
+  },
+  {
+    "word": "最後に",
+    "reading": "さいごに",
+    "meaning": "finally; at the end",
+    "pos": "adverb"
+  },
+  {
+    "word": "普段",
+    "reading": "ふだん",
+    "meaning": "usually; ordinarily; habitually",
+    "pos": "adverb"
+  },
+  {
+    "word": "突然",
+    "reading": "とつぜん",
+    "meaning": "suddenly",
+    "pos": "adverb"
+  },
+  {
+    "word": "急に",
+    "reading": "きゅうに",
+    "meaning": "suddenly; abruptly",
+    "pos": "adverb"
+  },
+  {
+    "word": "いつか",
+    "reading": "",
+    "meaning": "someday; sometime",
+    "pos": "adverb"
+  },
+  {
+    "word": "以来",
+    "reading": "いらい",
+    "meaning": "since; ever since",
+    "pos": "adverb"
+  },
+  {
+    "word": "以後",
+    "reading": "いご",
+    "meaning": "thereafter; from then on",
+    "pos": "adverb"
+  },
+  {
+    "word": "とても",
+    "reading": "",
+    "meaning": "very",
+    "pos": "adverb"
+  },
+  {
+    "word": "かなり",
+    "reading": "",
+    "meaning": "fairly; considerably",
+    "pos": "adverb"
+  },
+  {
+    "word": "けっこう",
+    "reading": "",
+    "meaning": "quite; fairly; pretty",
+    "pos": "adverb"
+  },
+  {
+    "word": "すごく",
+    "reading": "",
+    "meaning": "very; extremely",
+    "pos": "adverb"
+  },
+  {
+    "word": "少し",
+    "reading": "すこし",
+    "meaning": "a little; a bit",
+    "pos": "adverb"
+  },
+  {
+    "word": "すこし",
+    "reading": "",
+    "meaning": "a little; a bit",
+    "pos": "adverb"
+  },
+  {
+    "word": "ちょっと",
+    "reading": "",
+    "meaning": "a little; slightly; a bit",
+    "pos": "adverb"
+  },
+  {
+    "word": "まったく",
+    "reading": "",
+    "meaning": "completely; entirely; absolutely (not at all with negatives)",
+    "pos": "adverb"
+  },
+  {
+    "word": "ぜんぜん",
+    "reading": "",
+    "meaning": "not at all (with negatives); completely (colloquial)",
+    "pos": "adverb"
+  },
+  {
+    "word": "ほとんど",
+    "reading": "",
+    "meaning": "mostly; almost; nearly; hardly (with negatives)",
+    "pos": "adverb"
+  },
+  {
+    "word": "たっぷり",
+    "reading": "",
+    "meaning": "plenty; fully; ample",
+    "pos": "adverb"
+  },
+  {
+    "word": "やや",
+    "reading": "",
+    "meaning": "somewhat; slightly",
+    "pos": "adverb"
+  },
+  {
+    "word": "十分に",
+    "reading": "じゅうぶんに",
+    "meaning": "sufficiently; enough; fully",
+    "pos": "adverb"
+  },
+  {
+    "word": "どんどん",
+    "reading": "",
+    "meaning": "rapidly; steadily; in succession",
+    "pos": "adverb"
+  },
+  {
+    "word": "ますます",
+    "reading": "",
+    "meaning": "more and more; increasingly",
+    "pos": "adverb"
+  },
+  {
+    "word": "大いに",
+    "reading": "おおいに",
+    "meaning": "greatly; very much",
+    "pos": "adverb"
+  },
+  {
+    "word": "多少",
+    "reading": "たしょう",
+    "meaning": "some; a little; more or less",
+    "pos": "adverb"
+  },
+  {
+    "word": "少なくとも",
+    "reading": "すくなくとも",
+    "meaning": "at least",
+    "pos": "adverb"
+  },
+  {
+    "word": "だいたい",
+    "reading": "",
+    "meaning": "roughly; approximately; mostly",
+    "pos": "adverb"
+  },
+  {
+    "word": "ほぼ",
+    "reading": "",
+    "meaning": "almost; nearly",
+    "pos": "adverb"
+  },
+  {
+    "word": "わりと",
+    "reading": "",
+    "meaning": "relatively; rather",
+    "pos": "adverb"
+  },
+  {
+    "word": "意外と",
+    "reading": "いがいと",
+    "meaning": "surprisingly; unexpectedly; relatively",
+    "pos": "adverb"
+  },
+  {
+    "word": "ゆっくり",
+    "reading": "",
+    "meaning": "slowly; at a leisurely pace",
+    "pos": "adverb"
+  },
+  {
+    "word": "しっかり",
+    "reading": "",
+    "meaning": "firmly; properly; reliably",
+    "pos": "adverb"
+  },
+  {
+    "word": "ちゃんと",
+    "reading": "",
+    "meaning": "properly; correctly",
+    "pos": "adverb"
+  },
+  {
+    "word": "きちんと",
+    "reading": "",
+    "meaning": "neatly; properly",
+    "pos": "adverb"
+  },
+  {
+    "word": "はっきり",
+    "reading": "",
+    "meaning": "clearly; distinctly",
+    "pos": "adverb"
+  },
+  {
+    "word": "じっくり",
+    "reading": "",
+    "meaning": "carefully; thoroughly; deliberately",
+    "pos": "adverb"
+  },
+  {
+    "word": "ぐっすり",
+    "reading": "",
+    "meaning": "soundly (sleep)",
+    "pos": "adverb"
+  },
+  {
+    "word": "そっと",
+    "reading": "",
+    "meaning": "gently; softly; quietly",
+    "pos": "adverb"
+  },
+  {
+    "word": "こっそり",
+    "reading": "",
+    "meaning": "secretly; stealthily",
+    "pos": "adverb"
+  },
+  {
+    "word": "いきなり",
+    "reading": "",
+    "meaning": "suddenly; all of a sudden",
+    "pos": "adverb"
+  },
+  {
+    "word": "わざと",
+    "reading": "",
+    "meaning": "on purpose; deliberately",
+    "pos": "adverb"
+  },
+  {
+    "word": "わざわざ",
+    "reading": "",
+    "meaning": "to go out of one's way; specially",
+    "pos": "adverb"
+  },
+  {
+    "word": "ぴったり",
+    "reading": "",
+    "meaning": "perfectly; exactly; snugly",
+    "pos": "adverb"
+  },
+  {
+    "word": "うっかり",
+    "reading": "",
+    "meaning": "carelessly; inadvertently",
+    "pos": "adverb"
+  },
+  {
+    "word": "すっかり",
+    "reading": "",
+    "meaning": "completely; entirely",
+    "pos": "adverb"
+  },
+  {
+    "word": "すっと",
+    "reading": "",
+    "meaning": "smoothly; with relief; straight",
+    "pos": "adverb"
+  },
+  {
+    "word": "ざっと",
+    "reading": "",
+    "meaning": "roughly; briefly; cursorily",
+    "pos": "adverb"
+  },
+  {
+    "word": "きらきら",
+    "reading": "",
+    "meaning": "sparklingly; glitteringly",
+    "pos": "adverb"
+  },
+  {
+    "word": "ばらばら",
+    "reading": "",
+    "meaning": "scattered; in pieces; separately",
+    "pos": "adverb"
+  },
+  {
+    "word": "そっくり",
+    "reading": "",
+    "meaning": "exactly alike; entirely; all",
+    "pos": "adverb"
+  },
+  {
+    "word": "ぼんやり",
+    "reading": "",
+    "meaning": "absentmindedly; vaguely; dimly",
+    "pos": "adverb"
+  },
+  {
+    "word": "ぐっと",
+    "reading": "",
+    "meaning": "greatly; firmly; much",
+    "pos": "adverb"
+  },
+  {
+    "word": "なるべく",
+    "reading": "",
+    "meaning": "as much as possible; whenever possible",
+    "pos": "adverb"
+  },
+  {
+    "word": "できるだけ",
+    "reading": "",
+    "meaning": "as much as possible; to the extent possible",
+    "pos": "adverb"
+  },
+  {
+    "word": "たぶん",
+    "reading": "",
+    "meaning": "probably; perhaps",
+    "pos": "adverb"
+  },
+  {
+    "word": "きっと",
+    "reading": "",
+    "meaning": "surely; definitely; no doubt",
+    "pos": "adverb"
+  },
+  {
+    "word": "おそらく",
+    "reading": "",
+    "meaning": "probably; perhaps",
+    "pos": "adverb"
+  },
+  {
+    "word": "もちろん",
+    "reading": "",
+    "meaning": "of course; certainly",
+    "pos": "adverb"
+  },
+  {
+    "word": "必ず",
+    "reading": "かならず",
+    "meaning": "without fail; always; certainly",
+    "pos": "adverb"
+  },
+  {
+    "word": "決して〜ない",
+    "reading": "けっして〜ない",
+    "meaning": "never; by no means; absolutely not (with negatives)",
+    "pos": "expression"
+  },
+  {
+    "word": "まさか",
+    "reading": "",
+    "meaning": "no way; impossible; surely not",
+    "pos": "adverb"
+  },
+  {
+    "word": "もし",
+    "reading": "",
+    "meaning": "if; in case",
+    "pos": "adverb"
+  },
+  {
+    "word": "もしも",
+    "reading": "",
+    "meaning": "if; supposing",
+    "pos": "adverb"
+  },
+  {
+    "word": "実は",
+    "reading": "じつは",
+    "meaning": "actually; in fact; to tell the truth",
+    "pos": "adverb"
+  },
+  {
+    "word": "そして",
+    "reading": "",
+    "meaning": "and; and then",
+    "pos": "conjunction"
+  },
+  {
+    "word": "それから",
+    "reading": "",
+    "meaning": "and then; after that",
+    "pos": "conjunction"
+  },
+  {
+    "word": "それで",
+    "reading": "",
+    "meaning": "and so; therefore",
+    "pos": "conjunction"
+  },
+  {
+    "word": "だから",
+    "reading": "",
+    "meaning": "therefore; so",
+    "pos": "conjunction"
+  },
+  {
+    "word": "しかし",
+    "reading": "",
+    "meaning": "however; but",
+    "pos": "conjunction"
+  },
+  {
+    "word": "それでも",
+    "reading": "",
+    "meaning": "nevertheless; even so",
+    "pos": "conjunction"
+  },
+  {
+    "word": "ところで",
+    "reading": "",
+    "meaning": "by the way",
+    "pos": "conjunction"
+  },
+  {
+    "word": "その上",
+    "reading": "そのうえ",
+    "meaning": "moreover; in addition",
+    "pos": "conjunction"
+  },
+  {
+    "word": "それに",
+    "reading": "",
+    "meaning": "besides; in addition",
+    "pos": "conjunction"
+  },
+  {
+    "word": "例えば",
+    "reading": "たとえば",
+    "meaning": "for example",
+    "pos": "conjunction"
+  },
+  {
+    "word": "一方で",
+    "reading": "いっぽうで",
+    "meaning": "on the other hand",
+    "pos": "conjunction"
+  },
+  {
+    "word": "ところが",
+    "reading": "",
+    "meaning": "however; yet (unexpected)",
+    "pos": "conjunction"
+  },
+  {
+    "word": "そのため",
+    "reading": "",
+    "meaning": "for that reason; therefore",
+    "pos": "conjunction"
+  },
+  {
+    "word": "その結果",
+    "reading": "そのけっか",
+    "meaning": "as a result; consequently",
+    "pos": "conjunction"
+  },
+  {
+    "word": "要するに",
+    "reading": "ようするに",
+    "meaning": "in short; to sum up",
+    "pos": "conjunction"
+  },
+  {
+    "word": "つまり",
+    "reading": "",
+    "meaning": "in other words; that is to say",
+    "pos": "conjunction"
+  },
+  {
+    "word": "とにかく",
+    "reading": "",
+    "meaning": "anyway; in any case",
+    "pos": "conjunction"
+  },
+  {
+    "word": "とりあえず",
+    "reading": "",
+    "meaning": "for the time being; for now",
+    "pos": "conjunction"
+  },
+  {
+    "word": "やはり",
+    "reading": "",
+    "meaning": "as expected; after all; still",
+    "pos": "adverb"
+  },
+  {
+    "word": "やっぱり",
+    "reading": "",
+    "meaning": "as expected; after all; still",
+    "pos": "adverb"
+  },
+  {
+    "word": "どうしても",
+    "reading": "",
+    "meaning": "by all means; no matter what; (with negatives) cannot",
+    "pos": "adverb"
   }
 ]
