@@ -15,8 +15,8 @@ export default function Setup({ onSave }) {
 
       <div className="grid grid-cols-1 gap-4">
         <label className="label flex flex-col gap-2">
-          Initial word count
-          <input className="field" type="number" min={1} max={2000} value={initialCount}
+          Initial word count (1-20)
+          <input className="field" type="number" min={1} max={20} value={initialCount}
                  onChange={e => setInitialCount(parseInt(e.target.value || '1'))} />
         </label>
 
