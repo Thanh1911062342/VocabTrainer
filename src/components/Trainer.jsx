@@ -1,10 +1,36 @@
-// src/components/Trainer.jsx (patched: add audio playback in Studied list)
-import React, { useEffect, useMemo, useState } from 'react'
+// src/components/Trainer.jsx (chunked recall: 20 items with 60% groups, 40% reservoir, + 1 new)
+// Also includes: audio playback in Studied (base91), eye menu, and no programmatic focus.
+import React, { useEffect, useState } from 'react'
 import { Eye, RotateCcw, Repeat, Presentation, ListChecks, Volume2, Square } from 'lucide-react'
 import RSVPDisplay from './RSVPDisplay'
 import Recall from './Recall'
 import { shuffle, normalize } from '../utils/shuffle'
 import { decodeBase91 } from '../utils/base91'
+
+const CHUNK_SIZE = 20
+
+function uniq(arr) {
+  const s = new Set(arr)
+  return [...s]
+}
+function sampleWithoutReplacement(pool, k, excludeSet) {
+  const filtered = !excludeSet ? [...pool] : pool.filter(i => !excludeSet.has(i))
+  if (k >= filtered.length) return [...filtered]
+  const a = [...filtered]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a.slice(0, k)
+}
+function diff(a, bSet) {
+  return a.filter(x => !bSet.has(x))
+}
+function unionMany(groups) {
+  const s = new Set()
+  for (const g of groups) for (const i of g) s.add(i)
+  return [...s]
+}
 
 export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [words, setWords] = useState([])
@@ -18,7 +44,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   const [pendingOutcome, setPendingOutcome] = useState(null) // 'pass' | 'fail'
   const [loading, setLoading] = useState(true)
 
-  // === NEW: audio state/cache ===
+  // === Audio state/cache for Studied modal ===
   const [playingIdx, setPlayingIdx] = useState(null)
   const audioCacheRef = React.useRef(new Map()) // idx -> { url, mime }
   const currentAudioRef = React.useRef(null)
@@ -31,46 +57,98 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
       const data = await res.json()
       setWords(data)
       const saved = localStorage.getItem(progressKey)
-      if (saved) setProgress(JSON.parse(saved))
+      let p = saved ? JSON.parse(saved) : null
+      if (!p) p = {}
+      if (!Array.isArray(p.studiedIdxs)) p.studiedIdxs = []
+      if (!Array.isArray(p.groups)) p.groups = []
+      if (typeof p.nextNewPtr !== 'number') p.nextNewPtr = 0
+      if (!('showReading' in p)) p.showReading = true
+      if (!('showMeaning' in p)) p.showMeaning = true
+      if (p.currentSet && !Array.isArray(p.currentSet)) p.currentSet = null
+      setProgress(p)
       setLoading(false)
     }
     load()
   }, [progressKey])
 
-  // Ensure studiedIdxs exists
-  useEffect(() => {
-    if (progress && !Array.isArray(progress.studiedIdxs)) {
-      saveProgress({ ...progress, studiedIdxs: [] })
-    }
-  }, [progress])
+  function saveProgress(p) {
+    setProgress(p)
+    localStorage.setItem(progressKey, JSON.stringify(p))
+  }
 
-  // Initialize random selection on first run (if missing)
-  useEffect(() => {
-    if (!progress || words.length === 0) return
-    if (!progress.selectedIdxs || !Array.isArray(progress.selectedIdxs) || progress.selectedIdxs.length === 0) {
-      const count = Math.min(words.length, config.initialCount || 5)
-      const idxs = Array.from({ length: words.length }, (_, i) => i)
-      for (let i = idxs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[idxs[i], idxs[j]] = [idxs[j], idxs[i]]
+  function pickNextNew(p, excludeSet) {
+    const total = words.length
+    if (total === 0) return null
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = p.nextNewPtr; i < total; i++) {
+        if (!p.studiedIdxs.includes(i) && !excludeSet.has(i)) {
+          p.nextNewPtr = (i + 1) % total
+          return i
+        }
       }
-      const selected = idxs.slice(0, count)
-      const p = { ...progress, selectedIdxs: selected, poolSize: selected.length }
-      saveProgress(p)
+      p.nextNewPtr = 0
     }
-  }, [progress, words, config.initialCount])
+    return null
+  }
 
-  // Prepare presentation order when the ACTIVE POOL changes (not on UI toggles)
+  function buildRecallSet(p) {
+    if (!words.length) return []
+    if (p.currentSet && p.currentSet.length) return p.currentSet
+
+    const N = CHUNK_SIZE
+    const exclude = new Set()
+    const unionGroups = unionMany(p.groups)
+    const setInGroups = new Set(unionGroups)
+    const reservoir = diff(p.studiedIdxs, setInGroups)
+
+    const newIdx = pickNextNew(p, exclude)
+    const newCount = (newIdx !== null) ? 1 : 0
+    if (newCount === 1) exclude.add(newIdx)
+    const base = Math.max(0, N - newCount)
+
+    let fromGroups = Math.floor(base * 0.6)
+    let fromReserv = base - fromGroups
+
+    const pickG = sampleWithoutReplacement(unionGroups, fromGroups, exclude)
+    pickG.forEach(i => exclude.add(i))
+    const pickR = sampleWithoutReplacement(reservoir, fromReserv, exclude)
+    pickR.forEach(i => exclude.add(i))
+
+    let selected = uniq([...pickG, ...pickR])
+
+    while (selected.length < base) {
+      const moreR = sampleWithoutReplacement(reservoir, 1, new Set(selected))
+      if (moreR.length) { selected.push(moreR[0]); continue }
+      const moreG = sampleWithoutReplacement(unionGroups, 1, new Set(selected))
+      if (moreG.length) { selected.push(moreG[0]); continue }
+      break
+    }
+
+    while (selected.length < base) {
+      const extraNew = pickNextNew(p, new Set([...selected, ...(newCount ? [newIdx] : [])]))
+      if (extraNew === null) break
+      selected.push(extraNew)
+    }
+
+    if (newCount === 1 && !selected.includes(newIdx)) selected.push(newIdx)
+
+    selected = selected.slice(0, N)
+
+    p.currentSet = selected
+    return selected
+  }
+
   useEffect(() => {
-    if (!progress || words.length === 0) return
-    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-      ? progress.selectedIdxs.map(i => words[i])
-      : words.slice(0, progress.poolSize)
-    setPresentationOrder(shuffle(currentPool))
-    // NOTE: do NOT auto-switch mode here; avoid unintended jumps when toggling UI flags.
-  }, [words, progress?.poolSize, progress?.selectedIdxs])
+    if (!progress || !words.length) return
+    if (mode !== 'present') return
+    const p = { ...progress }
+    const set = buildRecallSet(p)
+    if (JSON.stringify(p) !== JSON.stringify(progress)) saveProgress(p)
+    const items = set.map(i => words[i])
+    setPresentationOrder(shuffle(items))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, progress?.currentSet, words])
 
-  // Eye menu refs/handlers
   const eyeMenuRef = React.useRef(null);
   const eyeButtonRef = React.useRef(null);
 
@@ -93,14 +171,11 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     };
   }, []);
 
-  // Studied modal: no programmatic focus, but ensure cleanup
   useEffect(() => {
     if (showStudied) {
-      // Blur any active input to hide mobile keyboard
       if (document.activeElement && typeof document.activeElement.blur === 'function') {
         document.activeElement.blur();
       }
-      // Lock background scroll
       document.body.style.overflow = 'hidden';
       const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false); };
       document.addEventListener('keydown', onKey);
@@ -109,30 +184,23 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
         document.removeEventListener('keydown', onKey);
       };
     } else {
-      // When closing studied, stop audio and cleanup
       stopAudioAndCleanup()
     }
   }, [showStudied])
 
-  function saveProgress(p) {
-    setProgress(p)
-    localStorage.setItem(progressKey, JSON.stringify(p))
-  }
-
   function handleReplay() {
-    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-      ? progress.selectedIdxs.map(i => words[i])
-      : words.slice(0, progress.poolSize)
-    setPresentationOrder(shuffle(currentPool))
     setMode('present')
+    const p = progress
+    if (!p?.currentSet) return
+    const items = p.currentSet.map(i => words[i])
+    setPresentationOrder(shuffle(items))
   }
 
   function handleSubmitRecall(lines) {
-    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-      ? progress.selectedIdxs.map(i => words[i])
-      : words.slice(0, progress.poolSize)
+    const p = progress
+    const set = p?.currentSet || []
+    const currentPool = set.map(i => words[i])
 
-    // Build sets of acceptable answers
     const targets = new Map()
     currentPool.forEach((w, idx) => {
       targets.set(normalize(w.word), idx)
@@ -141,7 +209,6 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
     const answeredSet = new Set(lines.map(normalize).filter(Boolean))
 
-    // Evaluate: all unique targets must be present (per word at least one of kanji/hiragana)
     const poolMust = new Set(currentPool.map(w => normalize(w.word)))
     const ok = [...poolMust].every(base => {
       const w = currentPool.find(x => normalize(x.word) === base)
@@ -165,42 +232,36 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
   function applyOutcomeAndContinue() {
     if (!pendingOutcome) { setShowModal(false); return }
-    if (pendingOutcome === 'pass') {
-      // Update studied list with current pool indices when pass
-      const currentPoolIdxs = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-        ? [...progress.selectedIdxs]
-        : Array.from({ length: progress.poolSize }, (_, i) => i)
-      const studiedSet = new Set(progress.studiedIdxs || [])
-      currentPoolIdxs.forEach(i => studiedSet.add(i))
+    const p = { ...progress }
+    const set = p.currentSet || []
 
-      const currentSet = new Set(progress.selectedIdxs || [])
-      const allIdx = Array.from({ length: words.length }, (_, i) => i)
-      const remaining = allIdx.filter(i => !currentSet.has(i))
-      for (let i = remaining.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[remaining[i], remaining[j]] = [remaining[j], remaining[i]]
-      }
-      const addCount = Math.min(config.increment || 1, remaining.length)
-      const added = remaining.slice(0, addCount)
-      const newSelected = [...currentSet, ...added]
-      saveProgress({ ...progress, studiedIdxs: Array.from(studiedSet), selectedIdxs: newSelected, poolSize: newSelected.length, round: (progress.round || 1) + 1 })
+    // maintain round counter
+    p.round = (p.round || 1) + 1
+
+    if (pendingOutcome === 'pass') {
+      if (set.length) p.groups = [...(p.groups || []), [...set]]
+      const s = new Set(p.studiedIdxs || [])
+      set.forEach(i => s.add(i))
+      p.studiedIdxs = [...s]
+      p.currentSet = null
     } else {
-      // fail: keep pool, only advance round
-      saveProgress({ ...progress, round: (progress.round || 1) + 1 })
+      // keep currentSet as is
     }
+
     setPendingOutcome(null)
     setShowModal(false)
+    saveProgress(p)
     setMode('present')
   }
 
   // === Audio helpers ===
   function sniffMime(bytes) {
-    if (bytes.length >= 3 && bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) return 'audio/mpeg' // ID3
-    if (bytes.length >= 2 && bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) return 'audio/mpeg' // MP3 frame
-    if (bytes.length >= 4 && bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) return 'audio/ogg' // OggS
-    if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45) return 'audio/wav' // RIFF....WAVE
-    if (bytes.length >= 4 && bytes[0] === 0x66 && bytes[1] === 0x4C && bytes[2] === 0x61 && bytes[3] === 0x43) return 'audio/flac' // fLaC
-    if (bytes.length >= 8 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return 'audio/mp4' // ftyp
+    if (bytes.length >= 3 && bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) return 'audio/mpeg'
+    if (bytes.length >= 2 && bytes[0] === 0xFF && (bytes[1] & 0xE0) === 0xE0) return 'audio/mpeg'
+    if (bytes.length >= 4 && bytes[0] === 0x4F && bytes[1] === 0x67 && bytes[2] === 0x67 && bytes[3] === 0x53) return 'audio/ogg'
+    if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x41 && bytes[10] === 0x56 && bytes[11] === 0x45) return 'audio/wav'
+    if (bytes.length >= 4 && bytes[0] === 0x66 && bytes[1] === 0x4C && bytes[2] === 0x61 && bytes[3] === 0x43) return 'audio/flac'
+    if (bytes.length >= 8 && bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) return 'audio/mp4'
     return 'audio/mpeg'
   }
 
@@ -214,13 +275,10 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   }
 
   async function togglePlay(idx) {
-    // If same index is playing -> stop
     if (playingIdx === idx) {
       stopAudioAndCleanup()
       return
     }
-
-    // Stop any current audio first
     stopAudioAndCleanup()
 
     const w = words[idx]
@@ -249,18 +307,15 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     try {
       await audio.play()
     } catch (e) {
-      // Playback blocked or error; reset state
       setPlayingIdx(null)
       currentAudioRef.current = null
       console.error('Audio play error', e)
     }
   }
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopAudioAndCleanup()
-      // Revoke all cached URLs
       for (const { url } of audioCacheRef.current.values()) {
         try { URL.revokeObjectURL(url) } catch {}
       }
@@ -270,13 +325,11 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
   if (loading || !progress) return null
 
-  const uiPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-    ? progress.selectedIdxs.map(i => words[i])
-    : words.slice(0, progress.poolSize)
+  const activeSet = progress.currentSet || []
+  const uiPool = activeSet.map(i => words[i])
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Modal for pass/fail */}
       {mode === 'result' && lastResult && showModal && (
         <div className="modal-overlay">
           <div className="modal-panel">
@@ -328,7 +381,6 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
         </div>
       )}
 
-      {/* Header */}
       <div className="flex items-center justify-between p-3 sm:p-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-2 text-sm text-neutral-300">
           <button
@@ -342,7 +394,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
             title="View studied list"
             aria-label="View studied list"
           >
-            Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}
+            Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : 0)}
           </button>
           <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">
             Speed: {config.speedMs}ms
@@ -352,7 +404,6 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          {/* eye menu (reading/meaning) */}
           <div className="relative">
             <button
               ref={eyeButtonRef}
@@ -406,20 +457,16 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
             )}
           </div>
 
-          {/* replay/present */}
           <button className="icon-btn" onClick={handleReplay} title="Replay presentation" aria-label="Replay">
             <Repeat />
           </button>
-          {/* reset */}
           <button className="icon-btn" onClick={onReset} title="Reset" aria-label="Reset">
             <RotateCcw />
           </button>
         </div>
       </div>
 
-      {/* Body */}
       <div className="flex-1 flex flex-col px-4 pb-4">
-
         {showStudied && (
           <div className="modal-overlay" onClick={() => setShowStudied(false)} role="dialog" aria-modal="true" aria-label="Studied words">
             <div className="modal-box" onClick={(e) => e.stopPropagation()}>
@@ -482,9 +529,8 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           <div className="flex-1 flex flex-col" style={{ paddingTop: 'var(--top-offset-vh)' }}>
             <div className="flex items-center justify-center gap-2 mb-3 text-neutral-300">
               <ListChecks />
-              <span className="text-sm">Retype {uiPool.length} words (order doesn't matter)</span>
+              <span className="text-sm">Retype {uiPool.length || CHUNK_SIZE} words (order doesn't matter)</span>
             </div>
-            {/* No programmatic focus */}
             <Recall targets={uiPool} onSubmit={handleSubmitRecall} />
           </div>
         )}
@@ -506,7 +552,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
                     </div>
                   </div>
                 )}
-                {lastResult.extras.length > 0 && (
+                {lastResult.extras && lastResult.extras.length > 0 && (
                   <div>
                     <div className="mb-1 opacity-80">Not in the list:</div>
                     <div className="flex flex-wrap gap-2 justify-center">
