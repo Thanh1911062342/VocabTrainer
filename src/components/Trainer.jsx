@@ -18,13 +18,6 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
   // Load data + progress
   useEffect(() => {
-    if (!showStudied) return;
-    const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false) };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [showStudied])
-
-  useEffect(() => {
     async function load() {
       setLoading(true)
       const res = await fetch(`${import.meta.env.BASE_URL}mock-be/words.json`)
@@ -39,26 +32,12 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
   // Ensure studiedIdxs exists
   useEffect(() => {
-    if (!showStudied) return;
-    const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false) };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [showStudied])
-
-  useEffect(() => {
     if (progress && !Array.isArray(progress.studiedIdxs)) {
       saveProgress({ ...progress, studiedIdxs: [] })
     }
   }, [progress])
 
   // Initialize random selection on first run (if missing)
-  useEffect(() => {
-    if (!showStudied) return;
-    const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false) };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [showStudied])
-
   useEffect(() => {
     if (!progress || words.length === 0) return
     if (!progress.selectedIdxs || !Array.isArray(progress.selectedIdxs) || progress.selectedIdxs.length === 0) {
@@ -75,52 +54,60 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
   }, [progress, words, config.initialCount])
 
   // Prepare presentation order when the ACTIVE POOL changes (not on UI toggles)
-useEffect(() => {
-    if (!showStudied) return;
-    const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false) };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [showStudied])
+  useEffect(() => {
+    if (!progress || words.length === 0) return
+    const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+      ? progress.selectedIdxs.map(i => words[i])
+      : words.slice(0, progress.poolSize)
+    setPresentationOrder(shuffle(currentPool))
+    // NOTE: do NOT auto-switch mode here; avoid unintended jumps when toggling UI flags.
+  }, [words, progress?.poolSize, progress?.selectedIdxs])
+
+  // Eye menu refs/handlers
+  const eyeMenuRef = React.useRef(null);
+  const eyeButtonRef = React.useRef(null);
 
   useEffect(() => {
-  if (!progress || words.length === 0) return
-  const currentPool = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-    ? progress.selectedIdxs.map(i => words[i])
-    : words.slice(0, progress.poolSize)
-  setPresentationOrder(shuffle(currentPool))
-  // NOTE: do NOT auto-switch mode here; avoid unintended jumps when toggling UI flags.
-}, [words, progress?.poolSize, progress?.selectedIdxs])
+    function onKeyDown(e) {
+      if (e.key === 'Escape') setShowEyeMenu(false);
+    }
+    function onMouseDown(e) {
+      const menu = eyeMenuRef.current;
+      const btn = eyeButtonRef.current;
+      if (!menu) return;
+      if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
+      setShowEyeMenu(false);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('mousedown', onMouseDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('mousedown', onMouseDown);
+    };
+  }, []);
 
-  
-const eyeMenuRef = React.useRef(null);
-const eyeButtonRef = React.useRef(null);
-
-useEffect(() => {
-    if (!showStudied) return;
-    const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false) };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [showStudied])
-
+  // Studied modal focus management
+  const studiedCloseBtnRef = React.useRef(null);
   useEffect(() => {
-  function onKeyDown(e) {
-    if (e.key === 'Escape') setShowEyeMenu(false);
-  }
-  function onMouseDown(e) {
-    const menu = eyeMenuRef.current;
-    const btn = eyeButtonRef.current;
-    if (!menu) return;
-    if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
-    setShowEyeMenu(false);
-  }
-  document.addEventListener('keydown', onKeyDown);
-  document.addEventListener('mousedown', onMouseDown);
-  return () => {
-    document.removeEventListener('keydown', onKeyDown);
-    document.removeEventListener('mousedown', onMouseDown);
-  };
-}, []);
-function saveProgress(p) {
+    if (showStudied) {
+      // Blur any active input (prevents mobile keyboard from popping)
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+      // Lock background scroll and focus close button in modal
+      document.body.style.overflow = 'hidden';
+      const id = requestAnimationFrame(() => studiedCloseBtnRef.current?.focus());
+      const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false); };
+      document.addEventListener('keydown', onKey);
+      return () => {
+        cancelAnimationFrame(id);
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', onKey);
+      };
+    }
+  }, [showStudied]);
+
+  function saveProgress(p) {
     setProgress(p)
     localStorage.setItem(progressKey, JSON.stringify(p))
   }
@@ -168,16 +155,16 @@ function saveProgress(p) {
     setMode('result')
     setShowModal(true)
   }
+
   function applyOutcomeAndContinue() {
     if (!pendingOutcome) { setShowModal(false); return }
     if (pendingOutcome === 'pass') {
-
-// Update studied list with current pool indices when pass
-const currentPoolIdxs = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
-  ? [...progress.selectedIdxs]
-  : Array.from({ length: progress.poolSize }, (_, i) => i)
-const studiedSet = new Set(progress.studiedIdxs || [])
-currentPoolIdxs.forEach(i => studiedSet.add(i))
+      // Update studied list with current pool indices when pass
+      const currentPoolIdxs = (progress.selectedIdxs && progress.selectedIdxs.length > 0)
+        ? [...progress.selectedIdxs]
+        : Array.from({ length: progress.poolSize }, (_, i) => i)
+      const studiedSet = new Set(progress.studiedIdxs || [])
+      currentPoolIdxs.forEach(i => studiedSet.add(i))
 
       const currentSet = new Set(progress.selectedIdxs || [])
       const allIdx = Array.from({ length: words.length }, (_, i) => i)
@@ -198,7 +185,6 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
     setShowModal(false)
     setMode('present')
   }
-
 
   if (loading || !progress) return null
 
@@ -263,7 +249,19 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
       {/* Header */}
       <div className="flex items-center justify-between p-3 sm:p-4">
         <div className="flex items-center gap-2 text-sm text-neutral-300">
-          <button className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hover:bg-neutral-700 transition" onClick={() => setShowStudied(true)} title="View studied list" aria-label="View studied list">Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}</button>
+          <button
+            className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hover:bg-neutral-700 transition"
+            onClick={() => {
+              if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+              }
+              setShowStudied(true);
+            }}
+            title="View studied list"
+            aria-label="View studied list"
+          >
+            Studied: {(progress.studiedIdxs ? progress.studiedIdxs.length : (progress.selectedIdxs ? progress.selectedIdxs.length : progress.poolSize))}
+          </button>
           <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700 hidden sm:inline">Speed: {config.speedMs}ms</span>
           <span className="px-2 py-1 bg-neutral-800 rounded-lg border border-neutral-700">Round: {progress.round || 1}</span>
         </div>
@@ -323,7 +321,6 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
           </div>
 
           {/* replay/present */}
-
           <button className="icon-btn" onClick={handleReplay} title="Replay presentation" aria-label="Replay">
             <Repeat />
           </button>
@@ -336,43 +333,46 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
 
       {/* Body */}
       <div className="flex-1 flex flex-col px-4 pb-4">
-        
-{showStudied && (
-  <div className="modal-overlay" onClick={() => setShowStudied(false)} role="dialog" aria-modal="true" aria-label="Studied words">
-    <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-      <div className="modal-header">
-        <div className="modal-title">Studied Words</div>
-        <button className="modal-close" onClick={() => setShowStudied(false)} aria-label="Close">✕</button>
-      </div>
-      <div className="modal-body">
-        {(progress.studiedIdxs && progress.studiedIdxs.length > 0) ? (
-          <ul className="studied-list">
-            {progress.studiedIdxs.map((i, k) => {
-              const w = words[i]
-              if (!w) return null
-              return (
-                <li key={k} className="studied-item">
-                  <div className="studied-row-top">
-                    <span className="word text-3xl">{w.word}</span>
-                    <span className="reading">{w.reading}</span>
-                  </div>
-                  <div className="studied-row-bottom">
-                    <span className="meaning">{w.meaning}</span>
-                    <span className="pos">{w.pos}</span>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        ) : (
-          <div className="empty">No studied words yet.</div>
-        )}
-      </div>
-    </div>
-  </div>
-)}
 
-{mode === 'present' && (
+        {showStudied && (
+          <div className="modal-overlay" onClick={() => setShowStudied(false)} role="dialog" aria-modal="true" aria-label="Studied words">
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <div className="modal-title">Studied Words</div>
+                <button ref={studiedCloseBtnRef} className="modal-close" onClick={() => setShowStudied(false)} aria-label="Close">✕</button>
+              </div>
+              <div className="modal-body max-h-[60vh] overflow-auto">
+                {(progress.studiedIdxs && progress.studiedIdxs.length > 0) ? (
+                  <ul className="studied-list space-y-3">
+                    {progress.studiedIdxs.map((i, k) => {
+                      const w = words[i]
+                      if (!w) return null
+                      return (
+                        <li key={k} className="studied-item p-3 rounded-lg border border-neutral-700 bg-neutral-900">
+                          <div className="studied-row-top flex justify-between text-sm">
+                            <span className="word font-medium text-lg">{w.word}</span>
+                            <span className="reading text-neutral-400">{w.reading}</span>
+                          </div>
+                          <div className="studied-row-bottom text-xs text-neutral-300 mt-1 flex justify-between">
+                            <span className="meaning">{w.meaning}</span>
+                            <span className="pos text-neutral-500">{w.pos}</span>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                ) : (
+                  <div className="empty text-sm text-neutral-400">No studied words yet.</div>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button className="icon-btn" onClick={() => setShowStudied(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {mode === 'present' && (
           <RSVPDisplay
             items={presentationOrder}
             speedMs={config.speedMs}
@@ -388,7 +388,7 @@ currentPoolIdxs.forEach(i => studiedSet.add(i))
               <ListChecks />
               <span className="text-sm">Retype {uiPool.length} words (order doesn't matter)</span>
             </div>
-            <Recall targets={uiPool} onSubmit={handleSubmitRecall} />
+            <Recall targets={uiPool} onSubmit={handleSubmitRecall} autoFocus={mode === 'recall' && !showStudied && !showModal} />
           </div>
         )}
 
