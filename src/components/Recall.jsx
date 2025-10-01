@@ -29,6 +29,7 @@ export default function Recall({ targets, onSubmit }) {
         placeholder={"word_1\nword_2\n..."}
         value={text}
         onChange={e => setText(e.target.value)}
+        autoFocus={!/Mobi|Android/i.test(navigator.userAgent)}
       />
       <div className="text-xs text-neutral-400 self-center">Words entered: {linesCount}</div>
       <button className="icon-btn self-center" title="Submit" aria-label="Submit">✔</button>
