@@ -1,12 +1,12 @@
+// Optional basE91 decoder utility (not currently imported).
 export function decodeBase91(str) {
-  const ENCODING_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
+  const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\\"";
   const DEC = new Array(256).fill(-1);
-  for (let i = 0; i < ENCODING_TABLE.length; i++) DEC[ENC.charCodeAt(i)] = i;
+  for (let i = 0; i < TABLE.length; i++) DEC[TABLE.charCodeAt(i)] = i;
   let v = -1, b = 0, n = 0;
   const out = [];
   for (let i = 0; i < str.length; i++) {
-    const c = str.charCodeAt(i);
-    const d = DEC[c];
+    const d = DEC[str.charCodeAt(i)];
     if (d === -1) continue;
     if (v < 0) v = d;
     else {
