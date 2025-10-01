@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react'
-import { normalize } from '../utils/shuffle'
 
 export default function Recall({ targets, onSubmit }) {
   const [text, setText] = useState('')
   const taRef = useRef(null)
 
+  // Reset input when the target pool changes, but DO NOT focus.
   useEffect(() => {
     setText('')
-    setTimeout(() => taRef.current?.focus(), 50)
   }, [targets])
 
   const linesCount = useMemo(() => {
@@ -29,7 +28,7 @@ export default function Recall({ targets, onSubmit }) {
         placeholder={"word_1\nword_2\n..."}
         value={text}
         onChange={e => setText(e.target.value)}
-        autoFocus={!/Mobi|Android/i.test(navigator.userAgent)}
+        // Absolutely NO autoFocus here. User must tap to focus.
       />
       <div className="text-xs text-neutral-400 self-center">Words entered: {linesCount}</div>
       <button className="icon-btn self-center" title="Submit" aria-label="Submit">✔</button>

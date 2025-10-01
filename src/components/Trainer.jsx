@@ -86,21 +86,18 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
     };
   }, []);
 
-  // Studied modal focus management
-  const studiedCloseBtnRef = React.useRef(null);
+  // Studied modal: DO NOT put focus on any element when opening.
   useEffect(() => {
     if (showStudied) {
-      // Blur any active input (prevents mobile keyboard from popping)
+      // Blur any active input to ensure keyboard hides on mobile.
       if (document.activeElement && typeof document.activeElement.blur === 'function') {
         document.activeElement.blur();
       }
-      // Lock background scroll and focus close button in modal
+      // Lock background scroll
       document.body.style.overflow = 'hidden';
-      const id = requestAnimationFrame(() => studiedCloseBtnRef.current?.focus());
       const onKey = (e) => { if (e.key === 'Escape') setShowStudied(false); };
       document.addEventListener('keydown', onKey);
       return () => {
-        cancelAnimationFrame(id);
         document.body.style.overflow = '';
         document.removeEventListener('keydown', onKey);
       };
@@ -339,7 +336,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
             <div className="modal-box" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <div className="modal-title">Studied Words</div>
-                <button ref={studiedCloseBtnRef} className="modal-close" onClick={() => setShowStudied(false)} aria-label="Close">✕</button>
+                <button className="modal-close" onClick={() => setShowStudied(false)} aria-label="Close">✕</button>
               </div>
               <div className="modal-body max-h-[60vh] overflow-auto">
                 {(progress.studiedIdxs && progress.studiedIdxs.length > 0) ? (
@@ -388,7 +385,8 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
               <ListChecks />
               <span className="text-sm">Retype {uiPool.length} words (order doesn't matter)</span>
             </div>
-            <Recall targets={uiPool} onSubmit={handleSubmitRecall} autoFocus={mode === 'recall' && !showStudied && !showModal} />
+            {/* Absolutely no programmatic focus in Recall */}
+            <Recall targets={uiPool} onSubmit={handleSubmitRecall} />
           </div>
         )}
 
