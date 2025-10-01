@@ -1,0 +1,2282 @@
+[
+  {
+    "word": "開く",
+    "reading": "あく",
+    "meaning": "to open (intransitive); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "開ける",
+    "reading": "あける",
+    "meaning": "to open (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "閉まる",
+    "reading": "しまる",
+    "meaning": "to close; to be shut; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "閉める",
+    "reading": "しめる",
+    "meaning": "to close; to shut (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "つく",
+    "reading": "",
+    "meaning": "to be on; to light (a lamp); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "つける",
+    "reading": "",
+    "meaning": "to turn on; to attach (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "消える",
+    "reading": "きえる",
+    "meaning": "to go out; to disappear; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "消す",
+    "reading": "けす",
+    "meaning": "to turn off; to extinguish (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "始まる",
+    "reading": "はじまる",
+    "meaning": "to begin; to start; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "始める",
+    "reading": "はじめる",
+    "meaning": "to begin; to start (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "終わる",
+    "reading": "おわる",
+    "meaning": "to end; to finish (intransitive); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "終える",
+    "reading": "おえる",
+    "meaning": "to finish; to complete (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "入る",
+    "reading": "はいる",
+    "meaning": "to enter; to go in; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "入れる",
+    "reading": "いれる",
+    "meaning": "to put in; to insert (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "出る",
+    "reading": "でる",
+    "meaning": "to go/come out; to leave; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "出す",
+    "reading": "だす",
+    "meaning": "to take out; to put out (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "集まる",
+    "reading": "あつまる",
+    "meaning": "to gather; to assemble; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "集める",
+    "reading": "あつめる",
+    "meaning": "to collect; to gather (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "並ぶ",
+    "reading": "ならぶ",
+    "meaning": "to line up; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "並べる",
+    "reading": "ならべる",
+    "meaning": "to line up; to arrange (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "立つ",
+    "reading": "たつ",
+    "meaning": "to stand (up); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "立てる",
+    "reading": "たてる",
+    "meaning": "to stand up; to set up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "乗る",
+    "reading": "のる",
+    "meaning": "to ride; to get on; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "乗せる",
+    "reading": "のせる",
+    "meaning": "to give a ride; to place on (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "止まる",
+    "reading": "とまる",
+    "meaning": "to stop; to stay; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "止める",
+    "reading": "とめる",
+    "meaning": "to stop (something); to park",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "変わる",
+    "reading": "かわる",
+    "meaning": "to change (intransitive); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "変える",
+    "reading": "かえる",
+    "meaning": "to change (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "決まる",
+    "reading": "きまる",
+    "meaning": "to be decided; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "決める",
+    "reading": "きめる",
+    "meaning": "to decide; to determine (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "続く",
+    "reading": "つづく",
+    "meaning": "to continue; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "続ける",
+    "reading": "つづける",
+    "meaning": "to continue (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "焼ける",
+    "reading": "やける",
+    "meaning": "to be burned; to be baked; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "焼く",
+    "reading": "やく",
+    "meaning": "to burn; to grill; to bake (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "増える",
+    "reading": "ふえる",
+    "meaning": "to increase; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "増やす",
+    "reading": "ふやす",
+    "meaning": "to increase (something); to add",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "減る",
+    "reading": "へる",
+    "meaning": "to decrease; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "減らす",
+    "reading": "へらす",
+    "meaning": "to decrease; to reduce (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "見つかる",
+    "reading": "みつかる",
+    "meaning": "to be found; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "見つける",
+    "reading": "みつける",
+    "meaning": "to find (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "壊れる",
+    "reading": "こわれる",
+    "meaning": "to break; to be broken; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "壊す",
+    "reading": "こわす",
+    "meaning": "to break; to destroy (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "割れる",
+    "reading": "われる",
+    "meaning": "to crack; to shatter; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "割る",
+    "reading": "わる",
+    "meaning": "to break; to split (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "汚れる",
+    "reading": "よごれる",
+    "meaning": "to get dirty; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "汚す",
+    "reading": "よごす",
+    "meaning": "to dirty; to pollute (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "届く",
+    "reading": "とどく",
+    "meaning": "to arrive; to be delivered; to reach; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "届ける",
+    "reading": "とどける",
+    "meaning": "to deliver; to send (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "育つ",
+    "reading": "そだつ",
+    "meaning": "to grow up; to be raised; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "育てる",
+    "reading": "そだてる",
+    "meaning": "to raise; to bring up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "冷える",
+    "reading": "ひえる",
+    "meaning": "to get cold; to cool down; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "冷やす",
+    "reading": "ひやす",
+    "meaning": "to cool; to chill (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "温まる",
+    "reading": "あたたまる",
+    "meaning": "to warm up; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "暖まる",
+    "reading": "あたたまる",
+    "meaning": "to warm up; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "温める",
+    "reading": "あたためる",
+    "meaning": "to warm (something); to heat",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "暖める",
+    "reading": "あたためる",
+    "meaning": "to warm (something); to heat",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "売れる",
+    "reading": "うれる",
+    "meaning": "to sell well; to be in demand; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "売る",
+    "reading": "うる",
+    "meaning": "to sell (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "落ちる",
+    "reading": "おちる",
+    "meaning": "to fall; to drop; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "落とす",
+    "reading": "おとす",
+    "meaning": "to drop; to lose (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "起きる",
+    "reading": "おきる",
+    "meaning": "to wake up; to happen; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "起こす",
+    "reading": "おこす",
+    "meaning": "to wake (someone); to cause (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "上がる",
+    "reading": "あがる",
+    "meaning": "to rise; to go up; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "上げる",
+    "reading": "あげる",
+    "meaning": "to raise; to increase (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "下がる",
+    "reading": "さがる",
+    "meaning": "to fall; to go down; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "下げる",
+    "reading": "さげる",
+    "meaning": "to lower; to reduce (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "戻る",
+    "reading": "もどる",
+    "meaning": "to return; to go back; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "戻す",
+    "reading": "もどす",
+    "meaning": "to put back; to return (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "返る",
+    "reading": "かえる",
+    "meaning": "to return; to be returned; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "返す",
+    "reading": "かえす",
+    "meaning": "to return (something); to give back",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "治る",
+    "reading": "なおる",
+    "meaning": "to get well; to be cured; to be repaired; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "治す",
+    "reading": "なおす",
+    "meaning": "to cure; to heal; to fix (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "直る",
+    "reading": "なおる",
+    "meaning": "to be fixed; to be repaired; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "直す",
+    "reading": "なおす",
+    "meaning": "to fix; to repair; to correct (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "外れる",
+    "reading": "はずれる",
+    "meaning": "to come off; to be disconnected; to be out of place; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "外す",
+    "reading": "はずす",
+    "meaning": "to remove; to undo; to take off (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "溶ける",
+    "reading": "とける",
+    "meaning": "to melt; to dissolve; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "溶かす",
+    "reading": "とかす",
+    "meaning": "to melt; to dissolve (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "解ける",
+    "reading": "ほどける",
+    "meaning": "to come untied; to be solved; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "解く",
+    "reading": "とく",
+    "meaning": "to untie; to solve (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "伝わる",
+    "reading": "つたわる",
+    "meaning": "to be conveyed; to spread; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "伝える",
+    "reading": "つたえる",
+    "meaning": "to convey; to tell (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "倒れる",
+    "reading": "たおれる",
+    "meaning": "to fall over; to collapse; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "倒す",
+    "reading": "たおす",
+    "meaning": "to knock down; to defeat (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "乾く",
+    "reading": "かわく",
+    "meaning": "to dry; to become dry; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "乾かす",
+    "reading": "かわかす",
+    "meaning": "to dry (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "冷める",
+    "reading": "さめる",
+    "meaning": "to cool down; to become lukewarm/cold; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "冷ます",
+    "reading": "さます",
+    "meaning": "to let cool; to cool (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "残る",
+    "reading": "のこる",
+    "meaning": "to remain; to be left; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "残す",
+    "reading": "のこす",
+    "meaning": "to leave (behind); to save (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "通る",
+    "reading": "とおる",
+    "meaning": "to pass through; to go along; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "通す",
+    "reading": "とおす",
+    "meaning": "to let through; to pass (something) through; to run through",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "燃える",
+    "reading": "もえる",
+    "meaning": "to burn; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "燃やす",
+    "reading": "もやす",
+    "meaning": "to burn; to set fire to (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "起こる",
+    "reading": "おこる",
+    "meaning": "to occur; to happen; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "ある",
+    "reading": "",
+    "meaning": "to exist; to be (inanimate); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "いる",
+    "reading": "",
+    "meaning": "to exist; to be (animate); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "行く",
+    "reading": "いく",
+    "meaning": "to go; to proceed; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "来る",
+    "reading": "くる",
+    "meaning": "to come; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "帰る",
+    "reading": "かえる",
+    "meaning": "to return; to go back (home); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "歩く",
+    "reading": "あるく",
+    "meaning": "to walk; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "走る",
+    "reading": "はしる",
+    "meaning": "to run; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "泳ぐ",
+    "reading": "およぐ",
+    "meaning": "to swim; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "飛ぶ",
+    "reading": "とぶ",
+    "meaning": "to fly; to jump; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "降りる",
+    "reading": "おりる",
+    "meaning": "to get off; to descend; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "登る",
+    "reading": "のぼる",
+    "meaning": "to climb; to go up; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "泊まる",
+    "reading": "とまる",
+    "meaning": "to stay overnight; to lodge; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "降る",
+    "reading": "ふる",
+    "meaning": "to fall (rain/snow); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "曲がる",
+    "reading": "まがる",
+    "meaning": "to turn; to bend (intr); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "着く",
+    "reading": "つく",
+    "meaning": "to arrive; to reach; to get to; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "生まれる",
+    "reading": "うまれる",
+    "meaning": "to be born; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "できる",
+    "reading": "",
+    "meaning": "to be able to; can; to be completed; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "かかる",
+    "reading": "",
+    "meaning": "to take (time/money); to be required; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "見える",
+    "reading": "みえる",
+    "meaning": "to be visible; can be seen; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "聞こえる",
+    "reading": "きこえる",
+    "meaning": "to be audible; can be heard; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "わかる",
+    "reading": "",
+    "meaning": "to understand; to be understood; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "疲れる",
+    "reading": "つかれる",
+    "meaning": "to get tired; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "慣れる",
+    "reading": "なれる",
+    "meaning": "to get used to; to become accustomed; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "別れる",
+    "reading": "わかれる",
+    "meaning": "to part; to break up; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "休む",
+    "reading": "やすむ",
+    "meaning": "to rest; to take a day off; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "住む",
+    "reading": "すむ",
+    "meaning": "to live; to reside; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "住んでいる",
+    "reading": "すんでいる",
+    "meaning": "to live; to reside (progressive/state); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "座る",
+    "reading": "すわる",
+    "meaning": "to sit; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "渡る",
+    "reading": "わたる",
+    "meaning": "to cross; to go across; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "待つ",
+    "reading": "まつ",
+    "meaning": "to wait for (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "晴れる",
+    "reading": "はれる",
+    "meaning": "to clear up; to become sunny; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "曇る",
+    "reading": "くもる",
+    "meaning": "to become cloudy; to cloud over; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "吹く",
+    "reading": "ふく",
+    "meaning": "to blow; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "凍る",
+    "reading": "こおる",
+    "meaning": "to freeze; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "混む",
+    "reading": "こむ",
+    "meaning": "to be crowded; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "空く",
+    "reading": "すく",
+    "meaning": "to become empty; to be less crowded; to get hungry; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "沸く",
+    "reading": "わく",
+    "meaning": "to boil; to come to the boil; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "会う",
+    "reading": "あう",
+    "meaning": "to meet (someone); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "あげる",
+    "reading": "",
+    "meaning": "to give; to present (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "遊ぶ",
+    "reading": "あそぶ",
+    "meaning": "to play; to have fun; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "浴びる",
+    "reading": "あびる",
+    "meaning": "to bathe in; to take (a shower) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "洗う",
+    "reading": "あらう",
+    "meaning": "to wash (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "言う",
+    "reading": "いう",
+    "meaning": "to say; to tell (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "歌う",
+    "reading": "うたう",
+    "meaning": "to sing (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "置く",
+    "reading": "おく",
+    "meaning": "to put; to place; to set down (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "送る",
+    "reading": "おくる",
+    "meaning": "to send; to dispatch (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "教える",
+    "reading": "おしえる",
+    "meaning": "to teach; to tell; to inform (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "押す",
+    "reading": "おす",
+    "meaning": "to push; to press (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "覚える",
+    "reading": "おぼえる",
+    "meaning": "to memorize; to learn; to remember (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "買う",
+    "reading": "かう",
+    "meaning": "to buy; to purchase (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "貸す",
+    "reading": "かす",
+    "meaning": "to lend (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "通う",
+    "reading": "かよう",
+    "meaning": "to commute; to go to and from regularly; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "借りる",
+    "reading": "かりる",
+    "meaning": "to borrow (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "聞く",
+    "reading": "きく",
+    "meaning": "to listen to; to ask (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "切る",
+    "reading": "きる",
+    "meaning": "to cut (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "着る",
+    "reading": "きる",
+    "meaning": "to wear; to put on (upper body) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "結婚する",
+    "reading": "けっこんする",
+    "meaning": "to get married; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "コピーする",
+    "reading": "",
+    "meaning": "to copy; to duplicate (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "知る",
+    "reading": "しる",
+    "meaning": "to know; to get to know (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "吸う",
+    "reading": "すう",
+    "meaning": "to inhale; to smoke; to suck (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "する",
+    "reading": "",
+    "meaning": "to do; to perform (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "卒業する",
+    "reading": "そつぎょうする",
+    "meaning": "to graduate from (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "掃除する",
+    "reading": "そうじする",
+    "meaning": "to clean; to tidy up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "助ける",
+    "reading": "たすける",
+    "meaning": "to help; to save; to rescue (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "食べる",
+    "reading": "たべる",
+    "meaning": "to eat (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "違う",
+    "reading": "ちがう",
+    "meaning": "to differ; to be wrong; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "使う",
+    "reading": "つかう",
+    "meaning": "to use; to make use of (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "作る",
+    "reading": "つくる",
+    "meaning": "to make; to create; to produce (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "出かける",
+    "reading": "でかける",
+    "meaning": "to go out; to leave home; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "手伝う",
+    "reading": "てつだう",
+    "meaning": "to help; to assist (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "撮る",
+    "reading": "とる",
+    "meaning": "to take (a photo) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "取る",
+    "reading": "とる",
+    "meaning": "to take; to pick up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "なくす",
+    "reading": "",
+    "meaning": "to lose (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "習う",
+    "reading": "ならう",
+    "meaning": "to learn; to take lessons in (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "入学する",
+    "reading": "にゅうがくする",
+    "meaning": "to enter a school; to matriculate; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "脱ぐ",
+    "reading": "ぬぐ",
+    "meaning": "to take off (clothes) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "寝る",
+    "reading": "ねる",
+    "meaning": "to sleep; to go to bed; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "飲む",
+    "reading": "のむ",
+    "meaning": "to drink (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "履く",
+    "reading": "はく",
+    "meaning": "to put on (pants/shoes) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "働く",
+    "reading": "はたらく",
+    "meaning": "to work; to labor; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "話す",
+    "reading": "はなす",
+    "meaning": "to speak; to talk (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "払う",
+    "reading": "はらう",
+    "meaning": "to pay (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "弾く",
+    "reading": "ひく",
+    "meaning": "to play (a string instrument) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "引く",
+    "reading": "ひく",
+    "meaning": "to pull; to consult (a dictionary) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "引っ越しする",
+    "reading": "ひっこしする",
+    "meaning": "to move (house); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "見せる",
+    "reading": "みせる",
+    "meaning": "to show; to display (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "見る",
+    "reading": "みる",
+    "meaning": "to see; to watch; to look at (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "磨く",
+    "reading": "みがく",
+    "meaning": "to brush; to polish; to shine (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "迎えに行く",
+    "reading": "むかえにいく",
+    "meaning": "to go to pick up (someone) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "持って行く",
+    "reading": "もっていく",
+    "meaning": "to take (something) along",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "持って来る",
+    "reading": "もってくる",
+    "meaning": "to bring (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "持つ",
+    "reading": "もつ",
+    "meaning": "to hold; to carry; to have (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "もらう",
+    "reading": "",
+    "meaning": "to receive; to get (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "やめる",
+    "reading": "",
+    "meaning": "to quit; to stop; to give up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "呼ぶ",
+    "reading": "よぶ",
+    "meaning": "to call; to invite (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "読む",
+    "reading": "よむ",
+    "meaning": "to read (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "忘れる",
+    "reading": "わすれる",
+    "meaning": "to forget (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "渡す",
+    "reading": "わたす",
+    "meaning": "to hand over; to pass; to give (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "予約する",
+    "reading": "よやくする",
+    "meaning": "to reserve; to book (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "連絡する",
+    "reading": "れんらくする",
+    "meaning": "to contact; to get in touch; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "相談する",
+    "reading": "そうだんする",
+    "meaning": "to consult; to discuss; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "紹介する",
+    "reading": "しょうかいする",
+    "meaning": "to introduce (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "案内する",
+    "reading": "あんないする",
+    "meaning": "to guide; to show around (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "説明する",
+    "reading": "せつめいする",
+    "meaning": "to explain (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "発表する",
+    "reading": "はっぴょうする",
+    "meaning": "to announce; to present (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "準備する",
+    "reading": "じゅんびする",
+    "meaning": "to prepare (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "計画する",
+    "reading": "けいかくする",
+    "meaning": "to plan; to make a plan (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "確認する",
+    "reading": "かくにんする",
+    "meaning": "to confirm; to check (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "変更する",
+    "reading": "へんこうする",
+    "meaning": "to change; to alter (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "修理する",
+    "reading": "しゅうりする",
+    "meaning": "to repair; to fix (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "点検する",
+    "reading": "てんけんする",
+    "meaning": "to inspect; to check (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "出席する",
+    "reading": "しゅっせきする",
+    "meaning": "to attend; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "欠席する",
+    "reading": "けっせきする",
+    "meaning": "to be absent; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "報告する",
+    "reading": "ほうこくする",
+    "meaning": "to report (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "記録する",
+    "reading": "きろくする",
+    "meaning": "to record; to keep a record of (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "保存する",
+    "reading": "ほぞんする",
+    "meaning": "to save; to preserve (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "更新する",
+    "reading": "こうしんする",
+    "meaning": "to update; to renew (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "登録する",
+    "reading": "とうろくする",
+    "meaning": "to register (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "注文する",
+    "reading": "ちゅうもんする",
+    "meaning": "to order (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "利用する",
+    "reading": "りようする",
+    "meaning": "to use; to make use of (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "使用する",
+    "reading": "しようする",
+    "meaning": "to use; to employ (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "練習する",
+    "reading": "れんしゅうする",
+    "meaning": "to practice (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "研究する",
+    "reading": "けんきゅうする",
+    "meaning": "to research; to study (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "出発する",
+    "reading": "しゅっぱつする",
+    "meaning": "to depart; to set out; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "到着する",
+    "reading": "とうちゃくする",
+    "meaning": "to arrive; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "乗り換える",
+    "reading": "のりかえる",
+    "meaning": "to transfer; to change (trains) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "遅れる",
+    "reading": "おくれる",
+    "meaning": "to be late; to be delayed; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "間に合う",
+    "reading": "まにあう",
+    "meaning": "to be in time; to make it; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "勝つ",
+    "reading": "かつ",
+    "meaning": "to win; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "負ける",
+    "reading": "まける",
+    "meaning": "to lose; to be defeated; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "喜ぶ",
+    "reading": "よろこぶ",
+    "meaning": "to be pleased; to be glad; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "悲しむ",
+    "reading": "かなしむ",
+    "meaning": "to be sad; to grieve; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "怒る",
+    "reading": "おこる",
+    "meaning": "to get angry; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "困る",
+    "reading": "こまる",
+    "meaning": "to be troubled; to be at a loss; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "迷う",
+    "reading": "まよう",
+    "meaning": "to hesitate; to be lost (physically/mentally); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "驚く",
+    "reading": "おどろく",
+    "meaning": "to be surprised; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "感動する",
+    "reading": "かんどうする",
+    "meaning": "to be moved; to be touched; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "緊張する",
+    "reading": "きんちょうする",
+    "meaning": "to be nervous; to feel tense; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "安心する",
+    "reading": "あんしんする",
+    "meaning": "to feel relieved; to be at ease; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "謝る",
+    "reading": "あやまる",
+    "meaning": "to apologize for (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "褒める",
+    "reading": "ほめる",
+    "meaning": "to praise; to compliment (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "叱る",
+    "reading": "しかる",
+    "meaning": "to scold; to reprimand (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "誘う",
+    "reading": "さそう",
+    "meaning": "to invite; to ask (someone) out (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "断る",
+    "reading": "ことわる",
+    "meaning": "to refuse; to decline; to turn down (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "頼む",
+    "reading": "たのむ",
+    "meaning": "to ask; to request; to rely on (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "受け取る",
+    "reading": "うけとる",
+    "meaning": "to receive; to accept (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "受ける",
+    "reading": "うける",
+    "meaning": "to receive; to take (an exam) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "合格する",
+    "reading": "ごうかくする",
+    "meaning": "to pass (an exam); (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "不合格になる",
+    "reading": "ふごうかくになる",
+    "meaning": "to fail (an exam); to be unsuccessful; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "拾う",
+    "reading": "ひろう",
+    "meaning": "to pick up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "捨てる",
+    "reading": "すてる",
+    "meaning": "to throw away; to discard (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "守る",
+    "reading": "まもる",
+    "meaning": "to protect; to obey (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "届け出る",
+    "reading": "とどけでる",
+    "meaning": "to file/submit (a report/notice) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "片付ける",
+    "reading": "かたづける",
+    "meaning": "to tidy up; to put in order; to clean up (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "掃く",
+    "reading": "はく",
+    "meaning": "to sweep (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "拭く",
+    "reading": "ふく",
+    "meaning": "to wipe (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "干す",
+    "reading": "ほす",
+    "meaning": "to dry; to air (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "畳む",
+    "reading": "たたむ",
+    "meaning": "to fold (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "炊く",
+    "reading": "たく",
+    "meaning": "to cook (rice) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "沸かす",
+    "reading": "わかす",
+    "meaning": "to boil; to heat (water) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "揚げる",
+    "reading": "あげる",
+    "meaning": "to deep-fry (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "炒める",
+    "reading": "いためる",
+    "meaning": "to stir-fry (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "煮る",
+    "reading": "にる",
+    "meaning": "to simmer; to stew (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "蒸す",
+    "reading": "むす",
+    "meaning": "to steam (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "連れて行く",
+    "reading": "つれていく",
+    "meaning": "to take (someone) along (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "連れて来る",
+    "reading": "つれてくる",
+    "meaning": "to bring (someone) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "思う",
+    "reading": "おもう",
+    "meaning": "to think; to believe (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "考える",
+    "reading": "かんがえる",
+    "meaning": "to think about; to consider (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "感じる",
+    "reading": "かんじる",
+    "meaning": "to feel; to sense (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "思い出す",
+    "reading": "おもいだす",
+    "meaning": "to recall; to remember (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "勤める",
+    "reading": "つとめる",
+    "meaning": "to work for; to be employed at (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "叩く",
+    "reading": "たたく",
+    "meaning": "to hit; to knock; to tap (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "蹴る",
+    "reading": "ける",
+    "meaning": "to kick (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "運ぶ",
+    "reading": "はこぶ",
+    "meaning": "to carry; to transport (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "包む",
+    "reading": "つつむ",
+    "meaning": "to wrap; to pack (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "積む",
+    "reading": "つむ",
+    "meaning": "to pile up; to load; to stack (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "外出する",
+    "reading": "がいしゅつする",
+    "meaning": "to go out; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "帰宅する",
+    "reading": "きたくする",
+    "meaning": "to go home; to return home; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "再生する",
+    "reading": "さいせいする",
+    "meaning": "to play (media) (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "停止する",
+    "reading": "ていしする",
+    "meaning": "to stop; to suspend (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "再開する",
+    "reading": "さいかいする",
+    "meaning": "to resume; to reopen (something)",
+    "pos": "verb (transitive)"
+  },
+  {
+    "word": "休憩する",
+    "reading": "きゅうけいする",
+    "meaning": "to take a break; to rest; (no object)",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "連絡を取る",
+    "reading": "れんらくをとる",
+    "meaning": "to make contact; to get in touch",
+    "pos": "expression"
+  },
+  {
+    "word": "高い",
+    "reading": "たかい",
+    "meaning": "high; tall; expensive",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "低い",
+    "reading": "ひくい",
+    "meaning": "low; short (height)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "多い",
+    "reading": "おおい",
+    "meaning": "many; numerous",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "少ない",
+    "reading": "すくない",
+    "meaning": "few; scarce",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "速い",
+    "reading": "はやい",
+    "meaning": "fast; quick (speed)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "遅い",
+    "reading": "おそい",
+    "meaning": "slow; late",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "早い",
+    "reading": "はやい",
+    "meaning": "early; quick (timing)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "新しい",
+    "reading": "あたらしい",
+    "meaning": "new",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "古い",
+    "reading": "ふるい",
+    "meaning": "old (not for people)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "明るい",
+    "reading": "あかるい",
+    "meaning": "bright; cheerful",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "暗い",
+    "reading": "くらい",
+    "meaning": "dark; gloomy",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "広い",
+    "reading": "ひろい",
+    "meaning": "wide; spacious",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "狭い",
+    "reading": "せまい",
+    "meaning": "narrow; cramped",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "重い",
+    "reading": "おもい",
+    "meaning": "heavy; serious",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "軽い",
+    "reading": "かるい",
+    "meaning": "light (weight); mild",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "強い",
+    "reading": "つよい",
+    "meaning": "strong",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "弱い",
+    "reading": "よわい",
+    "meaning": "weak",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "厚い",
+    "reading": "あつい",
+    "meaning": "thick; kind/cordial",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "薄い",
+    "reading": "うすい",
+    "meaning": "thin; weak (taste/color)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "暑い",
+    "reading": "あつい",
+    "meaning": "hot (weather)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "寒い",
+    "reading": "さむい",
+    "meaning": "cold (weather)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "熱い",
+    "reading": "あつい",
+    "meaning": "hot (to the touch)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "冷たい",
+    "reading": "つめたい",
+    "meaning": "cold/chilly (to the touch)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "暖かい",
+    "reading": "あたたかい",
+    "meaning": "warm (weather/feel)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "涼しい",
+    "reading": "すずしい",
+    "meaning": "cool; refreshing (weather/air)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "甘い",
+    "reading": "あまい",
+    "meaning": "sweet",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "辛い",
+    "reading": "からい",
+    "meaning": "spicy; hot (taste)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "苦い",
+    "reading": "にがい",
+    "meaning": "bitter",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "しょっぱい",
+    "reading": "",
+    "meaning": "salty",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "すっぱい",
+    "reading": "",
+    "meaning": "sour",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "長い",
+    "reading": "ながい",
+    "meaning": "long",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "短い",
+    "reading": "みじかい",
+    "meaning": "short (length/duration)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "太い",
+    "reading": "ふとい",
+    "meaning": "thick; fat",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "細い",
+    "reading": "ほそい",
+    "meaning": "thin; slender",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "丸い",
+    "reading": "まるい",
+    "meaning": "round",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "四角い",
+    "reading": "しかくい",
+    "meaning": "square",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "おいしい",
+    "reading": "",
+    "meaning": "delicious; tasty",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "まずい",
+    "reading": "",
+    "meaning": "tastes bad; unappetizing",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "おもしろい",
+    "reading": "",
+    "meaning": "interesting; amusing",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "つまらない",
+    "reading": "",
+    "meaning": "boring; dull",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "うるさい",
+    "reading": "",
+    "meaning": "noisy; annoying",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "かわいい",
+    "reading": "",
+    "meaning": "cute; adorable",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "かっこいい",
+    "reading": "",
+    "meaning": "cool; stylish; good-looking",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "優しい",
+    "reading": "やさしい",
+    "meaning": "kind; gentle; easy",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "厳しい",
+    "reading": "きびしい",
+    "meaning": "strict; severe",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "すごい",
+    "reading": "",
+    "meaning": "amazing; great; terrific",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "痛い",
+    "reading": "いたい",
+    "meaning": "painful; sore",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "忙しい",
+    "reading": "いそがしい",
+    "meaning": "busy",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "眠い",
+    "reading": "ねむい",
+    "meaning": "sleepy; drowsy",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "楽しい",
+    "reading": "たのしい",
+    "meaning": "fun; enjoyable",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "悲しい",
+    "reading": "かなしい",
+    "meaning": "sad",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "蒸し暑い",
+    "reading": "むしあつい",
+    "meaning": "hot and humid; muggy",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "惜しい",
+    "reading": "おしい",
+    "meaning": "regrettable; close (almost)",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "激しい",
+    "reading": "はげしい",
+    "meaning": "intense; violent",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "硬い",
+    "reading": "かたい",
+    "meaning": "hard; stiff; rigid",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "柔らかい",
+    "reading": "やわらかい",
+    "meaning": "soft; tender; pliable",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "鋭い",
+    "reading": "するどい",
+    "meaning": "sharp; acute",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "鈍い",
+    "reading": "にぶい",
+    "meaning": "dull; blunt; slow",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "細かい",
+    "reading": "こまかい",
+    "meaning": "fine; detailed; minute",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "恐ろしい",
+    "reading": "おそろしい",
+    "meaning": "terrible; frightening",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "ややこしい",
+    "reading": "",
+    "meaning": "complicated; confusing",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "便利",
+    "reading": "べんり",
+    "meaning": "convenient; handy",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "不便",
+    "reading": "ふべん",
+    "meaning": "inconvenient",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "有名",
+    "reading": "ゆうめい",
+    "meaning": "famous; well-known",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "無名",
+    "reading": "むめい",
+    "meaning": "unknown; nameless",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "安全",
+    "reading": "あんぜん",
+    "meaning": "safe",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "危険",
+    "reading": "きけん",
+    "meaning": "dangerous",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "簡単",
+    "reading": "かんたん",
+    "meaning": "simple; easy",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "複雑",
+    "reading": "ふくざつ",
+    "meaning": "complex; complicated",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "大切",
+    "reading": "たいせつ",
+    "meaning": "important; precious",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "どうでもいい",
+    "reading": "",
+    "meaning": "not important; whatever; don't care",
+    "pos": "expression"
+  },
+  {
+    "word": "にぎやか",
+    "reading": "",
+    "meaning": "lively; bustling",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "静か",
+    "reading": "しずか",
+    "meaning": "quiet",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "上手",
+    "reading": "じょうず",
+    "meaning": "skillful; good at",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "下手",
+    "reading": "へた",
+    "meaning": "unskillful; poor at",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "丈夫",
+    "reading": "じょうぶ",
+    "meaning": "durable; sturdy",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "壊れやすい",
+    "reading": "こわれやすい",
+    "meaning": "fragile; easily broken",
+    "pos": "adjective (i)"
+  },
+  {
+    "word": "まじめ",
+    "reading": "",
+    "meaning": "serious; earnest",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "いい加減",
+    "reading": "いいかげん",
+    "meaning": "sloppy; irresponsible; half-hearted",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "迷惑",
+    "reading": "めいわく",
+    "meaning": "troublesome; nuisance",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "助かる",
+    "reading": "たすかる",
+    "meaning": "to be saved; to be helped; to be a relief",
+    "pos": "verb (intransitive)"
+  },
+  {
+    "word": "きれい",
+    "reading": "",
+    "meaning": "pretty; clean; tidy",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "好き",
+    "reading": "すき",
+    "meaning": "fond of; to like",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "嫌い",
+    "reading": "きらい",
+    "meaning": "dislike; hate",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "親切",
+    "reading": "しんせつ",
+    "meaning": "kind; helpful",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "大変",
+    "reading": "たいへん",
+    "meaning": "tough; hard; terrible",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "不思議",
+    "reading": "ふしぎ",
+    "meaning": "mysterious; wondrous; strange",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "自由",
+    "reading": "じゆう",
+    "meaning": "free; unrestricted",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "立派",
+    "reading": "りっぱ",
+    "meaning": "splendid; fine; admirable",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "素敵",
+    "reading": "すてき",
+    "meaning": "lovely; wonderful; nice",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "元気",
+    "reading": "げんき",
+    "meaning": "healthy; lively; energetic",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "真剣",
+    "reading": "しんけん",
+    "meaning": "serious; earnest",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "快適",
+    "reading": "かいてき",
+    "meaning": "comfortable; pleasant",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "十分",
+    "reading": "じゅうぶん",
+    "meaning": "sufficient; enough; ample",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "夢中",
+    "reading": "むちゅう",
+    "meaning": "absorbed; engrossed",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "豊か",
+    "reading": "ゆたか",
+    "meaning": "abundant; rich; wealthy",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "新鮮",
+    "reading": "しんせん",
+    "meaning": "fresh",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "豪華",
+    "reading": "ごうか",
+    "meaning": "luxurious; magnificent",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "平気",
+    "reading": "へいき",
+    "meaning": "calm; indifferent; unconcerned",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "無理",
+    "reading": "むり",
+    "meaning": "impossible; unreasonable; overdoing",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "幸せ",
+    "reading": "しあわせ",
+    "meaning": "happy; fortunate",
+    "pos": "adjective (na)"
+  },
+  {
+    "word": "滑らか",
+    "reading": "なめらか",
+    "meaning": "smooth; sleek",
+    "pos": "adjective (na)"
+  }
+]

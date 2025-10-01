@@ -1,0 +1,261 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mobile-safe vertical rhythm & subtle top offset to avoid a center blemish */
+:root {
+  --top-offset-vh: 8vh; /* push content slightly above center */
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+.app-shell {
+  max-width: 800px;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography scales using clamp to track viewport size */
+.word-reading {
+  font-size: clamp(12px, 4.5vh, 28px);
+  line-height: 1.1;
+  opacity: 0.9;
+}
+
+.word-main {
+  font-size: clamp(28px, 12vh, 72px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.word-meaning {
+  font-size: clamp(12px, 3.8vh, 26px);
+  line-height: 1.15;
+  opacity: 0.95;
+}
+
+/* Ensure touch targets are comfy on mobile */
+.icon-btn {
+  @apply p-3 rounded-2xl bg-neutral-800/70 border border-neutral-700 hover:bg-neutral-800 active:scale-95 transition;
+}
+
+.field {
+  @apply bg-neutral-900 border border-neutral-700 rounded-xl px-4 py-3 w-full;
+}
+
+.label {
+  @apply text-sm text-neutral-300;
+}
+
+
+/* Make icon buttons host corner badges */
+.icon-btn { position: relative; }
+
+.badge-mini {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 10px;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.toast {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(20, 184, 166, 0.15); /* teal-ish */
+  border: 1px solid rgba(20, 184, 166, 0.35);
+  color: #D1FAE5;
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  transition: opacity 0.3s ease;
+}
+
+.toast.error {
+  background: rgba(244, 63, 94, 0.15); /* rose-ish */
+  border-color: rgba(244, 63, 94, 0.35);
+  color: #FFE4E6;
+}
+
+
+.inline-banner {
+  margin: 8px auto 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  font-weight: 700;
+}
+.inline-banner.pass {
+  color: #D1FAE5;
+  border-color: rgba(20, 184, 166, 0.4);
+  background: rgba(20, 184, 166, 0.12);
+}
+.inline-banner.fail {
+  color: #FFE4E6;
+  border-color: rgba(244, 63, 94, 0.4);
+  background: rgba(244, 63, 94, 0.12);
+}
+
+
+/* Modal popup for pass/fail */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.modal-panel {
+  width: min(92vw, 520px);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(24,24,27, 0.98);
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal-title {
+  font-size: clamp(18px, 2.6vh, 28px);
+  font-weight: 800;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+
+/* === Studied Modal (pure CSS, no Tailwind) === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background: #0f0f10;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  width: min(760px, 92vw);
+  max-height: 80vh;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header, .modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #222;
+}
+
+.modal-actions {
+  border-top: 1px solid #222;
+  border-bottom: none;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.modal-close, .btn {
+  appearance: none;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.modal-close:hover, .btn:hover {
+  background: #27272a;
+}
+
+.modal-body {
+  padding: 12px 16px;
+  overflow: auto;
+}
+
+.studied-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.studied-item {
+  background: #0b0b0c;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.studied-row-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: #e5e7eb;
+}
+
+.studied-row-top .word {
+  font-weight: 600;
+}
+
+.studied-row-top .reading {
+  color: #9ca3af;
+}
+
+.studied-row-bottom {
+  margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: #d1d5db;
+  font-size: 12px;
+}
+
+.studied-row-bottom .pos {
+  color: #9ca3af;
+}
+
+.empty {
+  color: #9ca3af;
+  font-size: 14px;
+}
