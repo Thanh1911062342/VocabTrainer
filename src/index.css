@@ -42,7 +42,7 @@ html, body, #root {
 
 /* Ensure touch targets are comfy on mobile */
 .icon-btn {
-  @apply p-3 rounded-2xl bg-neutral-800/70 border border-neutral-700 hover:bg-neutral-800 active:scale-95 transition;
+  @apply px-2 py-1.5 rounded-lg text-sm bg-neutral-800/70 border border-neutral-700 hover:bg-neutral-800 active:scale-95 transition;
 }
 
 .field {

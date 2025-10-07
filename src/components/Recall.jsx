@@ -29,8 +29,8 @@ export default function Recall({ targets, onSubmit }) {
         onChange={e => setText(e.target.value)}
         // Absolutely NO autoFocus here. User must tap to focus.
       />
-      <div className="text-xs text-neutral-400 self-center">Words entered: {linesCount}</div>
-      <button className="icon-btn self-center" title="Submit" aria-label="Submit">✔</button>
+      <div className="text-xs text-neutral-400 self-center">Words entered: {linesCount} <button className="icon-btn self-center" title="Submit" aria-label="Submit">✔</button></div>
+
     </form>
   )
 }
