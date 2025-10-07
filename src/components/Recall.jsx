@@ -21,7 +21,6 @@ export default function Recall({ targets, onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3 h-full">
-      <div className="text-center text-sm text-neutral-300">Type one word per line (kanji or hiragana)</div>
       <textarea
         ref={taRef}
         className="field flex-1 font-mono min-h-[40vh]"
