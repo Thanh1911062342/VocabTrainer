@@ -20,7 +20,7 @@ export default function Recall({ targets, onSubmit }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 h-full">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 h-full scale-90 origin-top">
       <textarea
         ref={taRef}
         className="field flex-1 font-mono min-h-[40vh]"
