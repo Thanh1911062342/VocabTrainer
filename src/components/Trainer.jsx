@@ -148,15 +148,15 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
   // === Chunked recall helper ===
   function buildRecallSet(p) {
-    // Always build exactly by rule: max 12 per round = 11 old + 1 new (if available),
+    // Always build exactly by rule: max 8 per round = 7 old + 1 new (if available),
     // where "old" = 60% from union(groups) and 40% from reservoir. If any source lacks,
     // top-up from the other.
-    const N = 12
+    const N = 8
     const hasNew = (p.newPool && p.newPool.length > 0)
     const newCount = hasNew ? 1 : 0
-    const base = N - newCount // 11
+    const base = N - newCount // 7
     let fromGroups = Math.floor(base * 0.6) // 11
-    let fromReserv = base - fromGroups
+    let fromReserv = base - fromGroups      // 8
 
     const union = uniq([].concat(...p.groups))
     const ex = new Set()
@@ -175,6 +175,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
 
     let selected = uniq([...pickG, ...pickR])
 
+    // src/components/Trainer.jsx: Line 202 (REVISED)
     if (hasNew) {
       // Find all new words that are not already in the exclusion set
       const availableNew = p.newPool.filter(v => !ex.has(v));
@@ -311,9 +312,9 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
       currentPoolIdxs.forEach(i => studiedSet.add(i))
 
       if (progress.chunkMode) {
-        // CHUNK MODE: current 12 becomes a new group
+        // CHUNK MODE: current 8 becomes a new group
         const prevGroups = Array.isArray(progress.groups) ? progress.groups.slice() : []
-        const newGroup = currentPoolIdxs.slice(0, 12)
+        const newGroup = currentPoolIdxs.slice(0, 8)
         if (newGroup.length > 0) prevGroups.push(newGroup)
 
         const newStudied = Array.from(studiedSet)
@@ -341,7 +342,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
         if (next && next.length) { p.currentSet = next; p.selectedIdxs = next; p.poolSize = next.length }
         saveProgress(p)
       } else {
-        // LEGACY MODE (growing 1-by-1) — try to add 1 new; if exceeding 12, switch to chunk mode immediately
+        // LEGACY MODE (growing 1-by-1) — try to add 1 new; if exceeding 8, switch to chunk mode immediately
         const currentSet = new Set(progress.selectedIdxs || [])
         const allIdx = Array.from({ length: words.length }, (_, i) => i)
         const remaining = allIdx.filter(i => !currentSet.has(i))
@@ -349,8 +350,8 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
         const added = fyShuffle(remaining).slice(0, addCount)
         const wouldSelected = [...currentSet, ...added]
 
-        if (wouldSelected.length > 12) {
-          // Switch to chunk mode now, build first chunk = 11 old + 1 new
+        if (wouldSelected.length > 8) {
+          // Switch to chunk mode now, build first chunk = 7 old + 1 new
           const newStudied = Array.from(studiedSet)
           // initialize chunk state
           const groups = [] // no group yet; this set will become group after next pass
@@ -359,7 +360,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
           // newPool = all - studied
           let newPool = allIdx.filter(i => !studiedSet.has(i))
 
-          const N = 12
+          const N = 8
           const base = N - (newPool.length > 0 ? 1 : 0)
           const ex = new Set()
           let pick = sampleNoRep(reservoir, base, ex); pick.forEach(v => ex.add(v))
