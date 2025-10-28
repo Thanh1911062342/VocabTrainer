@@ -345,7 +345,7 @@ export default function Trainer({ config, onReset, progressKey, configKey }) {
         const currentSet = new Set(progress.selectedIdxs || [])
         const allIdx = Array.from({ length: words.length }, (_, i) => i)
         const remaining = allIdx.filter(i => !currentSet.has(i))
-        const addCount = Math.max(config.increment || 1, remaining.length)
+        const addCount = Math.min(config.increment || 1, remaining.length)
         const added = fyShuffle(remaining).slice(0, addCount)
         const wouldSelected = [...currentSet, ...added]
 
